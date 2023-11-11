@@ -18,5 +18,12 @@ public class ExpenseTrackContext : IdentityDbContext<User>
         // Customize the ASP.NET Identity model and override the defaults if needed.
         // For example, you can rename the ASP.NET Identity table names and more.
         // Add your customizations after calling base.OnModelCreating(builder);
+        builder.Entity<User>()
+            .Property(e => e.firstName)
+        .HasMaxLength(250);
+
+        builder.Entity<User>()
+            .Property(e => e.lastName)
+            .HasMaxLength(250);
     }
 }

@@ -66,7 +66,7 @@ namespace ExpenseTrack.Controllers.UserProfile
                 {
                     UserId = loggedInUserId,
                     Income = model.Income,
-                   // UserProfilePicture = "abc"
+                    UserProfilePicture = "abc"
 
                 };
                 _context.UserInfo.Add(newUserInfo);
@@ -77,18 +77,18 @@ namespace ExpenseTrack.Controllers.UserProfile
                 if (model.Income != 0)
                 {
                     userInfo.Income = model.Income;
-                  //  userInfo.UserProfilePicture = "abc";
+                   userInfo.UserProfilePicture = "abc";
 
                 }
-                if (model.PictureFile != null)
-                {
-                    var imagePath = Path.Combine("images", "profile", model.PictureFile.FileName);
-                    using (var stream = new FileStream(imagePath, FileMode.Create))
-                    {
-                        await model.PictureFile.CopyToAsync(stream);
-                    }
-                    userInfo.UserProfilePicture = imagePath; // Save the image path
-                }
+                //if (model.PictureFile != null)
+                //{
+                //    var imagePath = Path.Combine("images", "profile", model.PictureFile.FileName);
+                //    using (var stream = new FileStream(imagePath, FileMode.Create))
+                //    {
+                //        await model.PictureFile.CopyToAsync(stream);
+                //    }
+                //    userInfo.UserProfilePicture = imagePath; // Save the image path
+                //}
                 _context.UserInfo.Update(userInfo);
             }
 

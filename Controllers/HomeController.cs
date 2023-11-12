@@ -16,9 +16,11 @@ namespace ExpenseTrack.Controllers
             this._userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
-            ViewData["UserID"] = _userManager.GetUserId(this.User);
+            var user = await _userManager.GetUserAsync(User);
+            var fullName = $"{user?.firstName} {user?.lastName}";
+            ViewData["FullName"] = fullName;
             return View();
         }
 

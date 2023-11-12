@@ -25,49 +25,75 @@ namespace ExpenseTrack.Controllers.UserProfile
 
         public async Task<IActionResult> Index()
         {
+         
             // Get the logged-in user ID
             var loggedInUserId = _userManager.GetUserId(this.User);
-
             // Retrieve user info for the logged-in user
             var userInfo = _context.UserInfo.FirstOrDefault(u => u.UserId == loggedInUserId);
-
-           
-                // Get the user details using UserManager
-                var loggedInUser = await _userManager.FindByIdAsync(loggedInUserId);
+            // Get the user details using UserManager
+            var loggedInUser = await _userManager.FindByIdAsync(loggedInUserId);
 
                 // Prepare data for the view
                 var model = new UserProfileViewModel
                 {
-                    Name = $"{loggedInUser.firstName} {loggedInUser.lastName}",
-                    Email = loggedInUser.Email
-                    //Income = userInfo.Income,
-                    //Picture = userInfo.UserProfilePicture
+                    FirstName = loggedInUser.firstName,
+                    LastName=loggedInUser.lastName,
+                    Email = loggedInUser.Email,
+                    Income = userInfo?.Income ?? 0,
+                    //   PictureFile = userInfo.UserProfilePicture
                 };
 
-                return View("~/Views/UserProfile/UserProfileView.cshtml", model);
+                return View("Index", model);
             
-
-          //  return View("~/Views/UserProfile/UserProfileView.cshtml");
         }
-
-
-
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
         {
-            // Get the logged-in user
-            var loggedInUser = await _userManager.GetUserAsync(User);
+            var loggedInUserId = _userManager.GetUserId(this.User);
+            var userInfo = _context.UserInfo.FirstOrDefault(u => u.UserId == loggedInUserId);
+            var loggedInUser = await _userManager.FindByIdAsync(loggedInUserId);
 
-            // Update the user's income
-            var userInfo = _context.UserInfo.FirstOrDefault(u => u.UserId == loggedInUser.Id);
-            if (userInfo != null)
+            if (loggedInUser != null)
             {
-                userInfo.Income = model.Income;
-                _context.SaveChanges();
+                loggedInUser.firstName = model.FirstName;
+                loggedInUser.lastName = model.LastName;
+                await _userManager.UpdateAsync(loggedInUser);
+            }
+            if (userInfo == null)
+            {
+                // Create a new UserInfo record for if not exists
+                var newUserInfo = new UserInfo
+                {
+                    UserId = loggedInUserId,
+                    Income = model.Income,
+                   // UserProfilePicture = "abc"
+
+                };
+                _context.UserInfo.Add(newUserInfo);
+            }
+            else
+            {
+                // Update the existing UserInfo record
+                if (model.Income != 0)
+                {
+                    userInfo.Income = model.Income;
+                  //  userInfo.UserProfilePicture = "abc";
+
+                }
+                if (model.PictureFile != null)
+                {
+                    var imagePath = Path.Combine("images", "profile", model.PictureFile.FileName);
+                    using (var stream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        await model.PictureFile.CopyToAsync(stream);
+                    }
+                    userInfo.UserProfilePicture = imagePath; // Save the image path
+                }
+                _context.UserInfo.Update(userInfo);
             }
 
-            // Handle picture upload here
+
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }

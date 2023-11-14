@@ -42,6 +42,11 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "UserProfile",
     pattern: "{controller=UserProfile}/{action=Index}");
+
+app.MapControllerRoute(
+    name: "UserProfile",
+    pattern: "{controller=Expense}/{action=Index}");
 app.MapRazorPages();
+
 
 app.Run();

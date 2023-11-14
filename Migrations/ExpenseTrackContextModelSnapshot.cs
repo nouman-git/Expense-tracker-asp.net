@@ -144,34 +144,35 @@ namespace ExpenseTrack.Migrations
                     b.HasIndex("CategoryID");
 
                     b.ToTable("Expenses");
+                });
 
             modelBuilder.Entity("ExpenseTrack.Models.UserProfile.UserInfo", b =>
-                {
-                    b.Property<int>("UserInfoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        {
+                            b.Property<int>("UserInfoId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserInfoId"), 1L, 1);
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserInfoId"), 1L, 1);
 
-                    b.Property<decimal>("Income")
-                        .HasColumnType("decimal(18,2)");
+                            b.Property<decimal>("Income")
+                                .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                            b.Property<string>("UserId")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserProfilePicture")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                            b.Property<string>("UserProfilePicture")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserInfoId");
+                            b.HasKey("UserInfoId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                            b.HasIndex("UserId")
+                                .IsUnique();
 
-                    b.ToTable("UserInfo");
+                            b.ToTable("UserInfo");
 
-                });
+                        });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -313,82 +314,86 @@ namespace ExpenseTrack.Migrations
             modelBuilder.Entity("ExpenseTrack.Models.Expense", b =>
                 {
                     b.HasOne("Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                                .WithMany()
+                                .HasForeignKey("CategoryID")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
 
                     b.Navigation("Category");
 
-            modelBuilder.Entity("ExpenseTrack.Models.UserProfile.UserInfo", b =>
-                {
-                    b.HasOne("ExpenseTrack.Areas.Identity.Data.User", "User")
-                        .WithOne("UserInfo")
-                        .HasForeignKey("ExpenseTrack.Models.UserProfile.UserInfo", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    modelBuilder.Entity("ExpenseTrack.Models.UserProfile.UserInfo", b =>
+                        {
+                            b.HasOne("ExpenseTrack.Areas.Identity.Data.User", "User")
+                            .WithOne("UserInfo")
+                            .HasForeignKey("ExpenseTrack.Models.UserProfile.UserInfo", "UserId")
+                            .OnDelete(DeleteBehavior.Cascade)
+                            .IsRequired();
 
-                    b.Navigation("User");
+                            b.Navigation("User");
 
+                        });
+
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                        {
+                            b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                            .WithMany()
+                            .HasForeignKey("RoleId")
+                            .OnDelete(DeleteBehavior.Cascade)
+                            .IsRequired();
+                        });
+
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                        {
+                            b.HasOne("ExpenseTrack.Areas.Identity.Data.User", null)
+                            .WithMany()
+                            .HasForeignKey("UserId")
+                            .OnDelete(DeleteBehavior.Cascade)
+                            .IsRequired();
+                        });
+
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                        {
+                            b.HasOne("ExpenseTrack.Areas.Identity.Data.User", null)
+                            .WithMany()
+                            .HasForeignKey("UserId")
+                            .OnDelete(DeleteBehavior.Cascade)
+                            .IsRequired();
+                        });
+
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                        {
+                            b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                            .WithMany()
+                            .HasForeignKey("RoleId")
+                            .OnDelete(DeleteBehavior.Cascade)
+                            .IsRequired();
+
+                            b.HasOne("ExpenseTrack.Areas.Identity.Data.User", null)
+                            .WithMany()
+                            .HasForeignKey("UserId")
+                            .OnDelete(DeleteBehavior.Cascade)
+                            .IsRequired();
+                        });
+
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                        {
+                            b.HasOne("ExpenseTrack.Areas.Identity.Data.User", null)
+                            .WithMany()
+                            .HasForeignKey("UserId")
+                            .OnDelete(DeleteBehavior.Cascade)
+                            .IsRequired();
+                        });
+
+                    modelBuilder.Entity("ExpenseTrack.Areas.Identity.Data.User", b =>
+                        {
+                            b.Navigation("UserInfo")
+                            .IsRequired();
+                        });
+#pragma warning restore 612
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("ExpenseTrack.Areas.Identity.Data.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("ExpenseTrack.Areas.Identity.Data.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ExpenseTrack.Areas.Identity.Data.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("ExpenseTrack.Areas.Identity.Data.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ExpenseTrack.Areas.Identity.Data.User", b =>
-                {
-                    b.Navigation("UserInfo")
-                        .IsRequired();
-                });
-#pragma warning restore 612, 618
         }
     }
 }
+
+    

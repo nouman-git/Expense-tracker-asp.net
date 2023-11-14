@@ -1,4 +1,5 @@
-﻿using ExpenseTrack.Areas.Identity.Data;
+using ExpenseTrack.Areas.Identity.Data;
+using ExpenseTrack.Models;
 using ExpenseTrack.Models.UserProfile;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -16,6 +17,9 @@ public class ExpenseTrackContext : IdentityDbContext<User>
         : base(options)
     {
     }
+
+    public DbSet<Expense> Expenses { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

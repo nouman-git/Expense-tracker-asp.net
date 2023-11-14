@@ -4,6 +4,7 @@ using ExpenseTrack.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpenseTrack.Migrations
 {
     [DbContext(typeof(ExpenseTrackContext))]
-    partial class ExpenseTrackContextModelSnapshot : ModelSnapshot
+    [Migration("20231112105623_Category-Migration")]
+    partial class CategoryMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,16 +94,6 @@ namespace ExpenseTrack.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("firstName")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("lastName")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -144,33 +137,6 @@ namespace ExpenseTrack.Migrations
                     b.HasIndex("CategoryID");
 
                     b.ToTable("Expenses");
-
-            modelBuilder.Entity("ExpenseTrack.Models.UserProfile.UserInfo", b =>
-                {
-                    b.Property<int>("UserInfoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserInfoId"), 1L, 1);
-
-                    b.Property<decimal>("Income")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserProfilePicture")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserInfoId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UserInfo");
-
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -319,17 +285,6 @@ namespace ExpenseTrack.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-
-            modelBuilder.Entity("ExpenseTrack.Models.UserProfile.UserInfo", b =>
-                {
-                    b.HasOne("ExpenseTrack.Areas.Identity.Data.User", "User")
-                        .WithOne("UserInfo")
-                        .HasForeignKey("ExpenseTrack.Models.UserProfile.UserInfo", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -380,12 +335,6 @@ namespace ExpenseTrack.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ExpenseTrack.Areas.Identity.Data.User", b =>
-                {
-                    b.Navigation("UserInfo")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

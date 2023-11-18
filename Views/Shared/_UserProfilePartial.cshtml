@@ -34,8 +34,9 @@
 
                 <div class="form-group">
                     <label>Income</label>
-                    <input type="text" class="form-control" name="Income" value="@((Model != null) ? Model.Income.ToString() : string.Empty)" required>
+                    <input type="number" class="form-control" name="Income" value="@((Model != null) ? Model.Income.ToString() : string.Empty)" min="1" pattern="\d+" title="Please enter a valid number" required>
                 </div>
+
 
                 <!-- Add similar checks for other properties -->
 

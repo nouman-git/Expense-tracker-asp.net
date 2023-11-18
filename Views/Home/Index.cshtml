@@ -3,13 +3,22 @@
 }
 
 <div class="text-center">
-    <h5>Welcome @ViewData["FullName"] </h5>
+    
 
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h5>Welcome @ViewData["FullName"] </h5>
         <div>
-        <a href="@Url.Action("Index", "UserProfile")">Go to Profile Settings</a>
+            <a href="@Url.Action("Index", "Expense")">Manage Your Expense</a>
         </div>
-    <div>
-        <a href="@Url.Action("Index", "Expense")">Manage Your Expense</a>
-    </div>
-</div>
+        <div>
+            <a href="@Url.Action("Index", "UserProfile")">Go to Profile Settings</a>
+        </div>
 
+        @* @await Html.PartialAsync("_UserProfilePartial") *@
+    }
+    else
+    {
+        <p>Please log in to view your profile settings and Manage your expenses.</p>
+    }
+</div>

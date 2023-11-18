@@ -16,7 +16,6 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,9 +30,27 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();;
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+// Middleware to redirect to login page if not authenticated
+app.Use(async (context, next) =>
+{
+    // Exclude specific paths from redirection to avoid a loop
+    var path = context.Request.Path;
+    if (!context.User.Identity.IsAuthenticated &&
+        !path.StartsWithSegments("/Identity/Account/Login") &&
+        !path.StartsWithSegments("/Identity/Account/Register") &&
+        !path.StartsWithSegments("/Identity/Account/Logout"))
+    {
+        // Redirect to login page if not authenticated
+        context.Response.Redirect("/Identity/Account/Login");
+        return;
+    }
+
+    await next();
+});
 
 app.MapControllerRoute(
     name: "default",
@@ -44,9 +61,9 @@ app.MapControllerRoute(
     pattern: "{controller=UserProfile}/{action=Index}");
 
 app.MapControllerRoute(
-    name: "UserProfile",
+    name: "Expense",
     pattern: "{controller=Expense}/{action=Index}");
-app.MapRazorPages();
 
+app.MapRazorPages();
 
 app.Run();

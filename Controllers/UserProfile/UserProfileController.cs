@@ -74,7 +74,7 @@ namespace ExpenseTrack.Controllers.UserProfile
             var userInfo = _context.UserInfo.FirstOrDefault(u => u.UserId == loggedInUserId);
             var loggedInUser = await _userManager.FindByIdAsync(loggedInUserId);
 
-            string fileName = null; // Declare fileName variable
+            string fileName = null;
 
             if (model.PictureFile != null)
             {
@@ -96,8 +96,13 @@ namespace ExpenseTrack.Controllers.UserProfile
                 {
                     await model.PictureFile.CopyToAsync(fileStream);
                 }
+            }
 
-                userInfo.UserProfilePicture = @"\images\profile\" + fileName;
+            if (loggedInUser != null)
+            {
+                loggedInUser.firstName = model.FirstName;
+                loggedInUser.lastName = model.LastName;
+                await _userManager.UpdateAsync(loggedInUser);
             }
 
             if (userInfo == null)
@@ -106,8 +111,8 @@ namespace ExpenseTrack.Controllers.UserProfile
                 {
                     UserId = loggedInUserId,
                     Income = model.Income,
-                    UserProfilePicture = fileName != null ? @"\images\profile\" + fileName : null
-                    // Add other properties as needed
+                    UserProfilePicture = fileName != null ? @"\images\profile\" + fileName : @"\images\profile\default.jpg" // Default value when PictureFile is null
+                                                                                                                           
                 };
                 _context.UserInfo.Add(newUserInfo);
             }
@@ -116,7 +121,15 @@ namespace ExpenseTrack.Controllers.UserProfile
                 if (model.Income != 0)
                 {
                     userInfo.Income = model.Income;
-                    // Update other properties as needed
+                }
+
+                if (model.PictureFile != null)
+                {
+                    userInfo.UserProfilePicture = @"\images\profile\" + fileName;
+                }
+                else if (userInfo.UserProfilePicture == null) // Handle the case where UserProfilePicture is null in the database
+                {
+                    userInfo.UserProfilePicture = @"\images\profile\default.jpg";
                 }
 
                 _context.UserInfo.Update(userInfo);
@@ -127,6 +140,7 @@ namespace ExpenseTrack.Controllers.UserProfile
             // Redirect to the home screen
             return RedirectToAction("Index", "Home");
         }
+
 
     }
 }

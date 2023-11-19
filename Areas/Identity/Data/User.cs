@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseTrack.Models;
 using ExpenseTrack.Models.UserProfile;
 using Microsoft.AspNetCore.Identity;
 
@@ -14,5 +15,7 @@ public class User : IdentityUser
 
     public string firstName { get; set; }
     public string lastName { get; set; }
+
+    public ICollection<Expense> Expenses { get; set; }
 }
 

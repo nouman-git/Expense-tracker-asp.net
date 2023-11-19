@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ExpenseTrack.Data;
 using ExpenseTrack.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace ExpenseTrack.Controllers
 {
@@ -18,12 +19,26 @@ namespace ExpenseTrack.Controllers
         }
 
         // GET: Expense
-        public IActionResult Index()
+        public IActionResult Index(DateTime? filterDate)
         {
-            var expenses = _context.Expenses.Include(e => e.Category).ToList();
+            // Get the ID of the currently logged-in user
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Filter expenses based on the user ID
+            var expenses = _context.Expenses
+                .Include(e => e.Category)
+                .Where(e => e.UserId == userId)
+                .ToList();
+
+            if (filterDate.HasValue)
+            {
+                expenses = expenses.Where(e => e.Date.Date == filterDate.Value.Date).ToList();
+            }
+
             return View(expenses);
         }
-		public IActionResult AddPage()
+
+        public IActionResult AddPage()
 		{
 			var categories = _context.Categories.Select(c => new SelectListItem
 			{
@@ -36,16 +51,30 @@ namespace ExpenseTrack.Controllers
 			return View("Add");
 		}
 
-		[HttpPost]
-		public IActionResult AddExpense(Expense expense)
-		{
-		
-			_context.Expenses.Add(expense);
-			_context.SaveChanges();
-			return RedirectToAction("Index"); 
-		}
+        [HttpPost]
+        public IActionResult AddExpense(Expense expense)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                expense.UserId = userId;
 
-		public IActionResult EditPage(int ExpenseID)
+                _context.Expenses.Add(expense);
+                _context.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as appropriate for your application
+                ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
+                return View("Add", expense);
+            }
+        }
+
+
+
+        public IActionResult EditPage(int ExpenseID)
 		{
 			// Retrieve the expense details from the database based on ExpenseID
 			var expense = _context.Expenses.FirstOrDefault(e => e.ExpenseID == ExpenseID);
@@ -69,28 +98,36 @@ namespace ExpenseTrack.Controllers
 
 
 		[HttpPost]
-		public IActionResult EditExpense(Expense expense)
-		{
-			
-				// Update the expense in the database
-				_context.Expenses.Update(expense);
-				_context.SaveChanges();
-				return RedirectToAction("Index"); 
-		}
+        public IActionResult EditExpense(Expense expense)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            expense.UserId = userId;
+
+            // Update the expense in the database
+            _context.Expenses.Update(expense);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
 
 
-		[HttpPost]
-		public IActionResult DeleteExpense(int ExpenseID)
-		{
-			var expense = _context.Expenses.Find(ExpenseID);
 
-			_context.Expenses.Remove(expense);
-			_context.SaveChanges();
+        [HttpPost]
+        public IActionResult DeleteExpense(int ExpenseID)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var expense = _context.Expenses.FirstOrDefault(e => e.ExpenseID == ExpenseID && e.UserId == userId);
+
+            if (expense != null)
+            {
+                _context.Expenses.Remove(expense);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }
 
 
-			return RedirectToAction("Index");
-		}
 
-
-	}
+    }
 }

@@ -9,21 +9,22 @@ namespace ExpenseTrack.Models
         [Key]
         public int ExpenseID { get; set; } // Primary Key
 
-        [Required]
-        public string ExpenseName { get; set; } 
+        [Required(ErrorMessage = "Expense Name is required.")]
+        public string ExpenseName { get; set; }
 
-        [Required]
-        public decimal Amount { get; set; } 
+        [Required(ErrorMessage = "Amount is required.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than zero.")]
+        public decimal Amount { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Date is required.")]
         public DateTime Date { get; set; }
 
-        [Required]
-        public string Description { get; set; } 
+        [Required(ErrorMessage = "Description is required.")]
+        public string Description { get; set; }
 
         [ForeignKey("Category")]
-        public int CategoryID { get; set; } //Foreign Key
+        public int CategoryID { get; set; } // Foreign Key
 
-        public Category Category { get; set; } 
+        public Category Category { get; set; }
     }
 }

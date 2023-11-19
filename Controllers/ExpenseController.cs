@@ -18,10 +18,14 @@ namespace ExpenseTrack.Controllers
         }
 
         // GET: Expense
-        public IActionResult Index()
+        public IActionResult Index(DateTime? filterDate)
         {
             var expenses = _context.Expenses.Include(e => e.Category).ToList();
-            return View(expenses);
+			if (filterDate.HasValue)
+			{
+				expenses = expenses.Where(e => e.Date.Date == filterDate.Value.Date).ToList();
+			}
+			return View(expenses);
         }
 		public IActionResult AddPage()
 		{
@@ -37,15 +41,24 @@ namespace ExpenseTrack.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult AddExpense(Expense expense)
-		{
-		
-			_context.Expenses.Add(expense);
-			_context.SaveChanges();
-			return RedirectToAction("Index"); 
-		}
+        public IActionResult AddExpense(Expense expense)
+        {
+            try
+            {
+                    _context.Expenses.Add(expense);
+                    _context.SaveChanges();
+                    return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as appropriate for your application
+                ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
+                return View("Add", expense);
+            }
+        }
 
-		public IActionResult EditPage(int ExpenseID)
+
+        public IActionResult EditPage(int ExpenseID)
 		{
 			// Retrieve the expense details from the database based on ExpenseID
 			var expense = _context.Expenses.FirstOrDefault(e => e.ExpenseID == ExpenseID);

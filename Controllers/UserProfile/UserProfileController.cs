@@ -78,6 +78,15 @@ namespace ExpenseTrack.Controllers.UserProfile
 
             if (model.PictureFile != null)
             {
+                // Check if the uploaded file is an allowed image type
+                if (!IsImageFile(model.PictureFile))
+                {
+                    ModelState.AddModelError("PictureFile", "Please upload a valid jpg, png, or jpeg image file.");
+                    // Set UserProfilePicture to the current value so it's not overridden
+                    model.UserProfilePicture = userInfo?.UserProfilePicture;
+                    // Handle the validation error, you may redirect to the same view or display an error message
+                    return View("_UserProfilePartial", model);
+                }
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
                 fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.PictureFile.FileName);
                 string profilePicturePath = Path.Combine(wwwRootPath, @"images\profile");
@@ -141,7 +150,12 @@ namespace ExpenseTrack.Controllers.UserProfile
             return RedirectToAction("Index", "Home");
         }
 
-
+        private bool IsImageFile(IFormFile file)
+        {
+            // Check the file content type to determine if it's a jpg, png, or jpeg image
+            var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
+            return allowedContentTypes.Contains(file.ContentType);
+        }
     }
 }
 

@@ -13,12 +13,17 @@
             <form asp-controller="UserProfile" asp-action="UpdateProfile" class="mt-4" method="post" enctype="multipart/form-data">
 
                 <div class="text-center mb-3">
-                    <img src="@(!string.IsNullOrEmpty(Model.UserProfilePicture) ? Model.UserProfilePicture : "/images/profilepic.jpg")" class="rounded-circle" style="width: 150px; height:150px; margin-bottom: 10px;" alt="Avatar" />
-                    <input type="file" class="form-control" name="PictureFile" accept="image/*">
+                    <img src="@(!string.IsNullOrEmpty(Model.UserProfilePicture) ? Model.UserProfilePicture : "/images/profile/default.jpg")" class="rounded-circle" style="width: 150px; height:150px; margin-bottom: 10px;" alt="Avatar" />
+                    <input type="file" class="form-control" name="PictureFile" accept=".jpg, .jpeg, .png">
+                    @if (ViewData.ModelState["PictureFile"] != null)
+                    {
+                        <div class="text-danger">@ViewData.ModelState["PictureFile"].Errors.First().ErrorMessage</div>
+                    }
                 </div>
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="text" class="form-control" value="@((Model != null && !string.IsNullOrEmpty(Model.Email)) ? Model.Email : string.Empty)" disabled>
+                    <input type="text" class="form-control" value="@((Model != null && !string.IsNullOrEmpty(Model.Email)) ? Model.Email : string.Empty)" readonly>
+                    <input type="hidden" name="Email" value="@Model.Email">
                 </div>
 
                 <div class="form-group">

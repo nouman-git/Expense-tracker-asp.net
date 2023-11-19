@@ -13,14 +13,28 @@
             <form asp-controller="UserProfile" asp-action="UpdateProfile" class="mt-4" method="post" enctype="multipart/form-data">
 
                 <div class="text-center mb-3">
-                    <img src="~/images/pp.jpg" class="rounded-circle" style="width: 150px; height:150px; margin-bottom: 10px;"
-                         alt="Avatar" />
-                    <input type="file" class="form-control" name="ProfilePictureFile" accept="image/*">
+                    <img src="@(!string.IsNullOrEmpty(Model.UserProfilePicture) ? Model.UserProfilePicture : "/images/profile/default.jpg")" class="rounded-circle" style="width: 150px; height:150px; margin-bottom: 10px;" alt="Avatar" />
+
+                    <div>
+                        <!-- Add Remove Picture button -->
+                        @if (!string.IsNullOrEmpty(Model.UserProfilePicture) && Model.UserProfilePicture != "/images/profile/default.jpg")
+                        {
+                            <button type="submit" name="RemovePicture" value="true" class="btn btn-danger mb-2">Remove Picture</button>
+                        }
+                    </div>
+
+                    <input type="file" class="form-control" name="PictureFile" accept=".jpg, .jpeg, .png">
+                    @if (ViewData.ModelState["PictureFile"] != null)
+                    {
+                        <div class="text-danger">@ViewData.ModelState["PictureFile"].Errors.First().ErrorMessage</div>
+                    }
                 </div>
+
 
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="text" class="form-control" value="@((Model != null && !string.IsNullOrEmpty(Model.Email)) ? Model.Email : string.Empty)" disabled>
+                    <input type="text" class="form-control" value="@((Model != null && !string.IsNullOrEmpty(Model.Email)) ? Model.Email : string.Empty)" readonly>
+                    <input type="hidden" name="Email" value="@Model.Email">
                 </div>
 
                 <div class="form-group">
@@ -37,9 +51,6 @@
                     <label>Income</label>
                     <input type="number" class="form-control" name="Income" value="@((Model != null) ? Model.Income.ToString() : string.Empty)" min="1" pattern="\d+" title="Please enter a valid number" required>
                 </div>
-
-
-                <!-- Add similar checks for other properties -->
 
                 <div class="text-center mt-3">
                     <button type="submit" class="btn btn-primary">Update Profile</button>

@@ -8,6 +8,7 @@
 
         public string Email { get; set; }
         public decimal Income { get; set; }
+        public string RemovePicture { get; set; }
         public string UserProfilePicture { get; set; }
         public IFormFile PictureFile { get; set; }
 

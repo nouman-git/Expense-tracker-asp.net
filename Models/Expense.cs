@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExpenseTrack.Areas.Identity.Data;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,5 +27,9 @@ namespace ExpenseTrack.Models
         public int CategoryID { get; set; } // Foreign Key
 
         public Category Category { get; set; }
+
+        [ForeignKey("User")]
+        public string UserId { get; set; } // Foreign Key for User
+        public User User { get; set; }
     }
 }

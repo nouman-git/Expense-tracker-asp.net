@@ -9,12 +9,22 @@
     {
         <h5>Welcome @ViewData["FullName"] </h5>
         <div>
-            <a href="@Url.Action("Index", "Expense")">Manage Your Expense</a>
-        </div>
-        <div>
             <a href="@Url.Action("Index", "UserProfile")">Go to Profile Settings</a>
         </div>
+        <div>
+           @*  <button id="loadExpensePartial" class="btn btn-primary">Load Expense</button>
 
+            <div id="expensePartialContainer">
+                @Html.Partial("~/Views/Expense/_ExpenseIndexPartial.cshtml")
+            </div> *@
+
+            <button id="loadExpensePartial" class="btn btn-primary">Load Expense</button>
+
+            <div id="expensePartialContainer"></div>
+
+        </div>
+      
+            
         @* @await Html.PartialAsync("_UserProfilePartial") *@
     }
     else
@@ -22,3 +32,12 @@
         <p>Please log in to view your profile settings and Manage your expenses.</p>
     }
 </div>
+<script>
+    $(document).ready(function () {
+        $("#loadExpensePartial").click(function () {
+            $.get('@Url.Action("Index", "Expense")', function (data) {
+                $("#expensePartialContainer").html(data);
+            });
+        });
+    });
+</script>

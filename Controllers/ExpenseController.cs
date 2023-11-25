@@ -20,11 +20,8 @@ namespace ExpenseTrack.Controllers
 
         // GET: Expense
         public IActionResult Index(DateTime? filterDate)
-        {
-            // Get the ID of the currently logged-in user
+        { 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // Filter expenses based on the user ID
             var expenses = _context.Expenses
                 .Include(e => e.Category)
                 .Where(e => e.UserId == userId)
@@ -35,8 +32,32 @@ namespace ExpenseTrack.Controllers
                 expenses = expenses.Where(e => e.Date.Date == filterDate.Value.Date).ToList();
             }
 
+            if (HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                // If it's an AJAX request, return the partial view
+                return PartialView("_ExpenseIndexPartial", expenses);
+            }
+
             return View(expenses);
         }
+        //public IActionResult ExpensePartialView(DateTime? filterDate)
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var expenses = _context.Expenses
+        //        .Include(e => e.Category)
+        //        .Where(e => e.UserId == userId)
+        //        .ToList();
+
+        //    if (filterDate.HasValue)
+        //    {
+        //        expenses = expenses.Where(e => e.Date.Date == filterDate.Value.Date).ToList();
+        //    }
+
+        //    return PartialView("_ExpenseIndexPartial", expenses);
+        //}
+
+
+
 
         public IActionResult AddPage()
 		{

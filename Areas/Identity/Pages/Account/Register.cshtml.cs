@@ -108,6 +108,11 @@ namespace ExpenseTrack.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Income")]
+            [Range(0.01, double.MaxValue, ErrorMessage = "Income must be a non-zero positive number.")]
+            public decimal Income { get; set; }
         }
 
 
@@ -129,6 +134,7 @@ namespace ExpenseTrack.Areas.Identity.Pages.Account
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 user.firstName = Input.FirstName;
                 user.lastName = Input.LastName;
+                user.Income = Input.Income;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

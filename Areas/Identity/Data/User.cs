@@ -12,10 +12,9 @@ namespace ExpenseTrack.Areas.Identity.Data;
 public class User : IdentityUser
 {
     public UserInfo UserInfo { get; set; }
-
     public string firstName { get; set; }
     public string lastName { get; set; }
-
+    public decimal Income { get; set; }
     public ICollection<Expense> Expenses { get; set; }
 }
 

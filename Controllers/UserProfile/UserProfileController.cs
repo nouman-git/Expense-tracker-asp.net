@@ -40,7 +40,7 @@ namespace ExpenseTrack.Controllers.UserProfile
                 FirstName = loggedInUser?.firstName,
                 LastName = loggedInUser?.lastName,
                 Email = loggedInUser?.Email,
-                Income = userInfo?.Income ?? 0,
+                Income = loggedInUser?.Income ?? 0,
                 UserProfilePicture = userInfo?.UserProfilePicture // Display profile picture URL
             };
 
@@ -59,7 +59,7 @@ namespace ExpenseTrack.Controllers.UserProfile
                 FirstName = loggedInUser?.firstName,
                 LastName = loggedInUser?.lastName,
                 Email = loggedInUser?.Email,
-                Income = userInfo?.Income ?? 0,
+                Income = loggedInUser?.Income ?? 0,
                 UserProfilePicture = userInfo?.UserProfilePicture // Display profile picture URL
             };
 
@@ -138,6 +138,7 @@ namespace ExpenseTrack.Controllers.UserProfile
             {
                 loggedInUser.firstName = model.FirstName;
                 loggedInUser.lastName = model.LastName;
+                loggedInUser.Income = model.Income;
                 await _userManager.UpdateAsync(loggedInUser);
             }
 
@@ -146,7 +147,6 @@ namespace ExpenseTrack.Controllers.UserProfile
                 var newUserInfo = new UserInfo
                 {
                     UserId = loggedInUserId,
-                    Income = model.Income,
                     UserProfilePicture = fileName != null ? @"\images\profile\" + fileName : @"\images\profile\default.jpg" // Default value when PictureFile is null
                                                                                                                            
                 };

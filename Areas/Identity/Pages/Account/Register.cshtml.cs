@@ -135,6 +135,7 @@ namespace ExpenseTrack.Areas.Identity.Pages.Account
                 user.firstName = Input.FirstName;
                 user.lastName = Input.LastName;
                 user.Income = Input.Income;
+                user.Balance = Input.Income;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

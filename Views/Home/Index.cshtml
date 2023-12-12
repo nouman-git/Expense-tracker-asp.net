@@ -3,8 +3,6 @@
 }
 
 <div class="text-center">
-    
-
     @if (User.Identity.IsAuthenticated)
     {
         <h5>Welcome @ViewData["FullName"] </h5>
@@ -12,32 +10,70 @@
             <a href="@Url.Action("Index", "UserProfile")">Go to Profile Settings</a>
         </div>
         <div>
-           @*  <button id="loadExpensePartial" class="btn btn-primary">Load Expense</button>
+            <h5 id="Balance">@ViewData["Balance"]</h5>
+            <button id="increaseBalanceButton" class="btn btn-primary">Increase Balance</button>
 
-            <div id="expensePartialContainer">
-                @Html.Partial("~/Views/Expense/_ExpenseIndexPartial.cshtml")
-            </div> *@
+            <div id="increaseBalanceContainer" style="display: none;">
+                <input type="number" id="amountInput" placeholder="Enter amount" />
+                <button id="submitIncreaseBalance" class="btn btn-success">Submit</button>
+            </div>
 
             <button id="loadExpensePartial" class="btn btn-primary">Load Expense</button>
 
             <div id="expensePartialContainer"></div>
-
         </div>
-      
-            
-        @* @await Html.PartialAsync("_UserProfilePartial") *@
     }
     else
     {
-        <p>Please log in to view your profile settings and Manage your expenses.</p>
+        <p>Please log in to view your profile settings and manage your expenses.</p>
     }
 </div>
-<script>
-    $(document).ready(function () {
-        $("#loadExpensePartial").click(function () {
-            $.get('@Url.Action("Index", "Expense")', function (data) {
-                $("#expensePartialContainer").html(data);
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#loadExpensePartial").click(function () {
+                console.log("Load Expense button clicked");
+                $.get('@Url.Action("Index", "Expense")', function (data) {
+                    $("#expensePartialContainer").html(data);
+                });
             });
+
+            $("#increaseBalanceButton").click(function () {
+                console.log("Increase Balance button clicked");
+                $("#increaseBalanceContainer").show();
+            });
+
+            $("#submitIncreaseBalance").click(function () {
+                console.log("Submit Increase Balance button clicked");
+                var amount = parseFloat($("#amountInput").val());
+
+                if (!isNaN(amount) && amount > 0) {
+                    console.log("Valid amount: " + amount);
+
+                    $.post('@Url.Action("IncreaseBalance")', { amount: amount }, function () {
+                        console.log("Increase Balance success");
+                        // Update the balance dynamically
+                        updateBalance();
+                        // Clear the input field
+                        $("#amountInput").val('');
+                    });
+                } else {
+                    // Provide user feedback for invalid input
+                    console.log("Invalid amount");
+                    alert("Please enter a valid positive amount.");
+                }
+            });
+
+            function updateBalance() {
+                // Retrieve the updated balance from the server and update the UI
+                $.get('@Url.Action("Index", "Home")', function (data) {
+                    $("#Balance").html($(data).find("#Balance").html());
+                });
+            }
         });
-    });
-</script>
+    </script>
+}
+
+

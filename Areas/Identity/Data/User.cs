@@ -15,6 +15,7 @@ public class User : IdentityUser
     public string firstName { get; set; }
     public string lastName { get; set; }
     public decimal Income { get; set; }
+    public decimal Balance { get; set; }
     public ICollection<Expense> Expenses { get; set; }
 }
 

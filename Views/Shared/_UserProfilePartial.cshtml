@@ -13,11 +13,11 @@
             <form asp-controller="UserProfile" asp-action="UpdateProfile" class="mt-4" method="post" enctype="multipart/form-data">
 
                 <div class="text-center mb-3">
-                    <img src="@(!string.IsNullOrEmpty(Model.UserProfilePicture) ? Model.UserProfilePicture : "/images/profile/default.jpg")" class="rounded-circle" style="width: 150px; height:150px; margin-bottom: 10px;" alt="Avatar" />
+                    <img src="@(!string.IsNullOrEmpty(Model.UserProfilePicture) ? Model.UserProfilePicture : "/images/default.jpg")" class="rounded-circle" style="width: 150px; height:150px; margin-bottom: 10px;" alt="Avatar" />
 
                     <div>
                         <!-- Add Remove Picture button -->
-                        @if (!string.IsNullOrEmpty(Model.UserProfilePicture) && Model.UserProfilePicture != "/images/profile/default.jpg")
+                        @if (!string.IsNullOrEmpty(Model.UserProfilePicture) && Model.UserProfilePicture != "/images/default.jpg")
                         {
                             <button type="submit" name="RemovePicture" value="true" class="btn btn-danger mb-2">Remove Picture</button>
                         }

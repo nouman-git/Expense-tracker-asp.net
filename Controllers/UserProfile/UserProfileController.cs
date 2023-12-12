@@ -81,13 +81,13 @@ namespace ExpenseTrack.Controllers.UserProfile
                 if (userInfo != null)
                 {
                     // Update the UserProfilePicture to default
-                    userInfo.UserProfilePicture = "/images/profile/default.jpg";
+                    userInfo.UserProfilePicture = "/images/default.jpg";
                     _context.UserInfo.Update(userInfo);
                     await _context.SaveChangesAsync();
                 }
 
                 // Update the UserProfilePicture in the model for display
-                model.UserProfilePicture = "/images/profile/default.jpg";
+                model.UserProfilePicture = "/images/default.jpg";
             }
 
             if (model.PictureFile != null)
@@ -147,7 +147,7 @@ namespace ExpenseTrack.Controllers.UserProfile
                 var newUserInfo = new UserInfo
                 {
                     UserId = loggedInUserId,
-                    UserProfilePicture = fileName != null ? @"\images\profile\" + fileName : @"\images\profile\default.jpg" // Default value when PictureFile is null
+                    UserProfilePicture = fileName != null ? @"\images\profile\" + fileName : @"\images\default.jpg" // Default value when PictureFile is null
                                                                                                                            
                 };
                 _context.UserInfo.Add(newUserInfo);
@@ -165,7 +165,7 @@ namespace ExpenseTrack.Controllers.UserProfile
                 }
                 else if (userInfo.UserProfilePicture == null) // Handle the case where UserProfilePicture is null in the database
                 {
-                    userInfo.UserProfilePicture = @"\images\profile\default.jpg";
+                    userInfo.UserProfilePicture = @"\images\default.jpg";
                 }
 
                 _context.UserInfo.Update(userInfo);

@@ -50,7 +50,7 @@
                                 <td>@expense.Amount</td>
                                 <td>@expense.Date.ToShortDateString()</td>
                                 <td>@expense.Description</td>
-                                <td>@expense.Category.CategoryName</td>
+                                <td>@expense.Category</td>
                                 <td>
                                     <a asp-action="EditPage" asp-controller="Expense" asp-route-ExpenseID="@expense.ExpenseID" class="edit">
                                         <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>

@@ -20,7 +20,7 @@ namespace ExpenseTrack.Controllers
 
         // GET: Expense
         public IActionResult Index(DateTime? filterDate)
-        { 
+        {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var expenses = _context.Expenses
                 .Include(e => e.Category)
@@ -38,7 +38,7 @@ namespace ExpenseTrack.Controllers
                 return PartialView("_ExpenseIndexPartial", expenses);
             }
 
-            return View(expenses);
+            return View("Index");
         }
         //public IActionResult ExpensePartialView(DateTime? filterDate)
         //{
@@ -61,15 +61,14 @@ namespace ExpenseTrack.Controllers
 
         public IActionResult AddPage()
 		{
-			var categories = _context.Categories.Select(c => new SelectListItem
-			{
-				Value = c.CategoryID.ToString(),
-			    Text = c.CategoryName
-		 }).ToList();
+            var categories = new List<string> { "Category1", "Category2", "Category3" }; // Add your hardcoded categories
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c,
+                Text = c
+            }).ToList();
 
-			ViewBag.Categories = categories;
-
-			return View("Add");
+            return View("Add");
 		}
 
         [HttpPost]
@@ -89,6 +88,12 @@ namespace ExpenseTrack.Controllers
             {
                 // Log the exception or handle it as appropriate for your application
                 ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
+                var categories = new List<string> { "Category1", "Category2", "Category3" }; // Add your hardcoded categories
+                ViewBag.Categories = categories.Select(c => new SelectListItem
+                {
+                    Value = c,
+                    Text = c
+                }).ToList();
                 return View("Add", expense);
             }
         }
@@ -97,25 +102,22 @@ namespace ExpenseTrack.Controllers
 
         public IActionResult EditPage(int ExpenseID)
 		{
-			// Retrieve the expense details from the database based on ExpenseID
-			var expense = _context.Expenses.FirstOrDefault(e => e.ExpenseID == ExpenseID);
+            var expense = _context.Expenses.FirstOrDefault(e => e.ExpenseID == ExpenseID);
 
-			if (expense == null)
-			{
-				return NotFound(); 
-			}
+            if (expense == null)
+            {
+                return NotFound();
+            }
 
-			// Populate the ViewBag.Categories as in your "AddPage" action
-			var categories = _context.Categories.Select(c => new SelectListItem
-			{
-				Value = c.CategoryID.ToString(),
-				Text = c.CategoryName
-			}).ToList();
+            var categories = new List<string> { "Category1", "Category2", "Category3" }; // Add your hardcoded categories
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c,
+                Text = c
+            }).ToList();
 
-			ViewBag.Categories = categories;
-
-			return View("Edit", expense);
-		}
+            return View("Edit", expense);
+        }
 
 
 		[HttpPost]

@@ -17,8 +17,13 @@
                 <input type="number" id="amountInput" placeholder="Enter amount" />
                 <button id="submitIncreaseBalance" class="btn btn-success">Submit</button>
             </div>
+            <ul>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="index">Expense</a>
+                </li>
+                </ul>
 
-            <button id="loadExpensePartial" class="btn btn-primary">Load Expense</button>
+           
 
             <div id="expensePartialContainer"></div>
         </div>
@@ -33,12 +38,12 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         $(document).ready(function () {
-            $("#loadExpensePartial").click(function () {
-                console.log("Load Expense button clicked");
-                $.get('@Url.Action("Index", "Expense")', function (data) {
-                    $("#expensePartialContainer").html(data);
-                });
-            });
+            // $("#loadExpensePartial").click(function () {
+            //     console.log("Load Expense button clicked");
+            //     $.get('@Url.Action("Index", "Expense")', function (data) {
+            //         $("#expensePartialContainer").html(data);
+            //     });
+            // });
 
             $("#increaseBalanceButton").click(function () {
                 console.log("Increase Balance button clicked");

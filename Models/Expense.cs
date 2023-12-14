@@ -23,10 +23,8 @@ namespace ExpenseTrack.Models
         [Required(ErrorMessage = "Description is required.")]
         public string Description { get; set; }
 
-        [ForeignKey("Category")]
-        public int CategoryID { get; set; } // Foreign Key
-
-        public Category Category { get; set; }
+        [Required(ErrorMessage = "Category is required.")]
+        public string Category { get; set; }
 
         [ForeignKey("User")]
         public string UserId { get; set; } // Foreign Key for User

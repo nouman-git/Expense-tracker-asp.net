@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpenseTrack.Migrations
 {
     [DbContext(typeof(ExpenseTrackContext))]
-    [Migration("20231206140002_Income3")]
-    partial class Income3
+    [Migration("20231215175257_UpdatedMigrations")]
+    partial class UpdatedMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,23 +25,6 @@ namespace ExpenseTrack.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Category", b =>
-                {
-                    b.Property<int>("CategoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryID"));
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CategoryID");
-
-                    b.ToTable("Categories");
-                });
-
             modelBuilder.Entity("ExpenseTrack.Areas.Identity.Data.User", b =>
                 {
                     b.Property<string>("Id")
@@ -49,6 +32,9 @@ namespace ExpenseTrack.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -131,8 +117,9 @@ namespace ExpenseTrack.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("int");
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -151,8 +138,6 @@ namespace ExpenseTrack.Migrations
 
                     b.HasKey("ExpenseID");
 
-                    b.HasIndex("CategoryID");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Expenses");
@@ -165,6 +150,9 @@ namespace ExpenseTrack.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserInfoId"));
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Income")
                         .HasColumnType("decimal(18,2)");
@@ -324,19 +312,11 @@ namespace ExpenseTrack.Migrations
 
             modelBuilder.Entity("ExpenseTrack.Models.Expense", b =>
                 {
-                    b.HasOne("Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ExpenseTrack.Areas.Identity.Data.User", "User")
                         .WithMany("Expenses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
 
                     b.Navigation("User");
                 });

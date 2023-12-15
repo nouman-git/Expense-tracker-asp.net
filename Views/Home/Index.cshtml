@@ -6,9 +6,9 @@
     @if (User.Identity.IsAuthenticated)
     {
         <h5>Welcome @ViewData["FullName"] </h5>
-        <div>
-            <a href="@Url.Action("Index", "UserProfile")">Go to Profile Settings</a>
-        </div>
+           @* <div>
+               <a href="@Url.Action("Index", "UserProfile")">Go to Profile Settings</a>
+           </div> *@
         <div>
             <h5 id="Balance">@ViewData["Balance"]</h5>
             <button id="increaseBalanceButton" class="btn btn-primary">Increase Balance</button>
@@ -17,11 +17,7 @@
                 <input type="number" id="amountInput" placeholder="Enter amount" />
                 <button id="submitIncreaseBalance" class="btn btn-success">Submit</button>
             </div>
-            <ul>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="index">Expense</a>
-                </li>
-                </ul>
+           
 
            
 

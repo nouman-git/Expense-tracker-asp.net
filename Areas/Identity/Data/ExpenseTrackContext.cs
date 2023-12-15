@@ -19,7 +19,6 @@ public class ExpenseTrackContext : IdentityDbContext<User>
     }
 
     public DbSet<Expense> Expenses { get; set; }
-    public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -6,6 +6,8 @@ using ExpenseTrack.Data;
 using ExpenseTrack.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
+using ExpenseTrack.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace ExpenseTrack.Controllers
 {
@@ -37,22 +39,6 @@ namespace ExpenseTrack.Controllers
             return View("Index", expenses);
         }
 
-        //public IActionResult ExpensePartialView(DateTime? filterDate)
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var expenses = _context.Expenses
-        //        .Include(e => e.Category)
-        //        .Where(e => e.UserId == userId)
-        //        .ToList();
-
-        //    if (filterDate.HasValue)
-        //    {
-        //        expenses = expenses.Where(e => e.Date.Date == filterDate.Value.Date).ToList();
-        //    }
-
-        //    return PartialView("_ExpenseIndexPartial", expenses);
-        //}
-
 
 
 
@@ -76,8 +62,35 @@ namespace ExpenseTrack.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 expense.UserId = userId;
 
-                _context.Expenses.Add(expense);
-                _context.SaveChanges();
+                var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null)
+                {
+                    if (expense.Amount > user.Balance)
+                    {
+                        // Expense amount exceeds user's balance
+                        ViewBag.ExceedsBalance = true;
+                        var categories = new List<string> { "Category1", "Category2", "Category3" };
+                        ViewBag.Categories = categories.Select(c => new SelectListItem
+                        {
+                            Value = c,
+                            Text = c
+                        }).ToList();
+                        return View("Add", expense);
+                    }
+                    else
+                    {
+                        // Deduct the amount from the user's balance
+                        user.Balance -= expense.Amount;
+                        _context.SaveChanges();
+
+                        // Add the expense to the database
+                        _context.Expenses.Add(expense);
+                        _context.SaveChanges();
+
+                        return RedirectToAction("Index");
+                    }
+                }
 
                 return RedirectToAction("Index");
             }
@@ -85,7 +98,7 @@ namespace ExpenseTrack.Controllers
             {
                 // Log the exception or handle it as appropriate for your application
                 ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
-                var categories = new List<string> { "Category1", "Category2", "Category3" }; // Add your hardcoded categories
+                var categories = new List<string> { "Category1", "Category2", "Category3" };
                 ViewBag.Categories = categories.Select(c => new SelectListItem
                 {
                     Value = c,
@@ -94,6 +107,7 @@ namespace ExpenseTrack.Controllers
                 return View("Add", expense);
             }
         }
+
 
 
 
@@ -151,3 +165,84 @@ namespace ExpenseTrack.Controllers
 
     }
 }
+
+
+
+//[HttpPost]
+//public IActionResult AddExpense(Expense expense)
+//{
+//    try
+//    {
+//        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+//        expense.UserId = userId;
+
+//        _context.Expenses.Add(expense);
+//        _context.SaveChanges();
+
+//        return RedirectToAction("Index");
+//    }
+//    catch (Exception ex)
+//    {
+//        // Log the exception or handle it as appropriate for your application
+//        ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
+//        var categories = new List<string> { "Category1", "Category2", "Category3" }; // Add your hardcoded categories
+//        ViewBag.Categories = categories.Select(c => new SelectListItem
+//        {
+//            Value = c,
+//            Text = c
+//        }).ToList();
+//        return View("Add", expense);
+//    }
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//public IActionResult ExpensePartialView(DateTime? filterDate)
+//{
+//    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+//    var expenses = _context.Expenses
+//        .Include(e => e.Category)
+//        .Where(e => e.UserId == userId)
+//        .ToList();
+
+//    if (filterDate.HasValue)
+//    {
+//        expenses = expenses.Where(e => e.Date.Date == filterDate.Value.Date).ToList();
+//    }
+
+//    return PartialView("_ExpenseIndexPartial", expenses);
+//}

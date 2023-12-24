@@ -1,127 +1,169 @@
-﻿// WishlistController.cs
-
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTrack.Data;
 using ExpenseTrack.Models;
 using System.Security.Claims;
 
-namespace ExpenseTrack.Controllers
+public class WishlistController : Controller
 {
-    public class WishlistController : Controller
+    private readonly ExpenseTrackContext _context;
+
+    public WishlistController(ExpenseTrackContext context)
     {
-        private readonly ExpenseTrackContext _context;
+        _context = context;
+    }
 
-        public WishlistController(ExpenseTrackContext context)
+    public IActionResult Index(DateTime? filterDate)
+    {
+        try
         {
-            _context = context;
-        }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var wishlistItems = _context.WishlistItems
+                .Where(w => w.UserId == userId)
+                .ToList();
 
-        // GET: Wishlist
-        public IActionResult Index()
-        {
-            try
+            ViewBag.UserBalance = GetUserBalance(userId);
+
+            if (filterDate.HasValue)
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                // Get the user balance from your data source (replace this with your actual logic)
-                var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-                decimal userBalance = user?.Balance ?? 0;
-
-                ViewBag.UserBalance = userBalance;
-
-                var wishlistItems = _context.WishlistItems
-                    .Where(w => w.UserId == userId)
+                wishlistItems = wishlistItems
+                    .Where(w => w.Date.Date == filterDate.Value.Date)
                     .ToList();
+            }
 
-                return View("WishlistIndex", wishlistItems);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it as appropriate for your application
-                return BadRequest("An error occurred while processing your request.");
-            }
+            return View("WishlistIndex", wishlistItems);
         }
-
-        // WishlistController.cs
-
-        [HttpPost]
-        public IActionResult AddToExpense(int wishlistItemId)
+        catch (Exception ex)
         {
-            try
-            {
+            // Log the exception or handle it as appropriate for your application
+            return BadRequest("An error occurred while processing your request.");
+        }
+    }
+
+
+    public IActionResult AddPage()
+
+    {
+        var categories = new List<string> { "Category1", "Category2", "Category3" }; // Add your hardcoded categories
+        ViewBag.Categories = categories.Select(c => new SelectListItem
+        {
+            Value = c,
+            Text = c
+        }).ToList();
+        return View("WishlistAdd");
+    }
+
+    [HttpPost]
+    public IActionResult AddWishlistItem(WishlistItem wishlistItem)
+    {
+        try
+        {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                wishlistItem.UserId = userId;
 
-                // Get the wishlist item
-                var wishlistItem = _context.WishlistItems.FirstOrDefault(w => w.WishlistItemId == wishlistItemId && w.UserId == userId);
+                // Add the wishlist item
+                _context.WishlistItems.Add(wishlistItem);
+                _context.SaveChanges();
 
-                if (wishlistItem != null)
+                return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
+            var categories = new List<string> { "Category1", "Category2", "Category3" };
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c,
+                Text = c
+            }).ToList();
+            return View("WishlistAdd", wishlistItem);
+        }
+    }
+
+    [HttpPost]
+    public IActionResult AddToExpense(int wishlistItemId)
+    {
+        try
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Get the wishlist item
+            var wishlistItem = _context.WishlistItems.FirstOrDefault(w => w.WishlistItemId == wishlistItemId && w.UserId == userId);
+
+            if (wishlistItem != null)
+            {
+                // Check if the user balance is sufficient
+                var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+                if (user != null && wishlistItem.Amount <= user.Balance)
                 {
-                    // Check if the user balance is sufficient
-                    var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+                    // Deduct the amount from the user's balance
+                    user.Balance -= wishlistItem.Amount;
+                    _context.SaveChanges();
 
-                    if (user != null && wishlistItem.Amount < user.Balance)
+                    // Add the item to expenses
+                    var expense = new Expense
                     {
-                        // Deduct the amount from the user's balance
-                        user.Balance -= wishlistItem.Amount;
-                        _context.SaveChanges();
+                        ExpenseName = wishlistItem.ExpenseName,
+                        Amount = wishlistItem.Amount,
+                        Date = wishlistItem.Date,
+                        Description = wishlistItem.Description,
+                        Category = wishlistItem.Category,
+                        UserId = userId
+                    };
 
-                        // Add the item to expenses
-                        var expense = new Expense
-                        {
-                            ExpenseName = wishlistItem.ExpenseName,
-                            Amount = wishlistItem.Amount,
-                            Date = wishlistItem.Date,
-                            Description = wishlistItem.Description,
-                            Category = wishlistItem.Category,
-                            UserId = userId
-                        };
+                    _context.Expenses.Add(expense);
+                    _context.SaveChanges();
 
-                        _context.Expenses.Add(expense);
-                        _context.SaveChanges();
-
-                        // Remove the item from the wishlist
-                        _context.WishlistItems.Remove(wishlistItem);
-                        _context.SaveChanges();
-
-                        return RedirectToAction("Index", "Wishlist");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it as appropriate for your application
-                return BadRequest("An error occurred while processing your request.");
-            }
-
-            return RedirectToAction("Index", "Wishlist");
-        }
-
-
-
-        [HttpPost]
-        public IActionResult DeleteWishlistItem(int wishlistItemId)
-        {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var wishlistItem = _context.WishlistItems.FirstOrDefault(w => w.WishlistItemId == wishlistItemId && w.UserId == userId);
-
-                if (wishlistItem != null)
-                {
+                    // Remove the item from the wishlist
                     _context.WishlistItems.Remove(wishlistItem);
                     _context.SaveChanges();
-                }
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it as appropriate for your application
-                return BadRequest("An error occurred while processing your request.");
+                    return RedirectToAction("Index");
+                }
             }
         }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as appropriate for your application
+            return BadRequest("An error occurred while processing your request.");
+        }
+
+        // Redirect back to the wishlist if the operation is not successful
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public IActionResult DeleteWishlistItem(int wishlistItemId)
+    {
+        try
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var wishlistItem = _context.WishlistItems.FirstOrDefault(w => w.WishlistItemId == wishlistItemId && w.UserId == userId);
+
+            if (wishlistItem != null)
+            {
+                _context.WishlistItems.Remove(wishlistItem);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            // Log the exception or handle it as appropriate for your application
+            return BadRequest("An error occurred while processing your request.");
+        }
+    }
+
+ 
+    private decimal GetUserBalance(string userId)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+        return user?.Balance ?? 0;
     }
 }

@@ -10,7 +10,7 @@ namespace ExpenseTrack.Data;
 
 public class ExpenseTrackContext : IdentityDbContext<User>
 {
-
+    public DbSet<WishlistItem> WishlistItems { get; set; }
     public DbSet<UserInfo> UserInfo { get; set; }
 
     public ExpenseTrackContext(DbContextOptions<ExpenseTrackContext> options)

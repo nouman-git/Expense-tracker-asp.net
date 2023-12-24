@@ -76,16 +76,19 @@ namespace ExpenseTrack.Controllers
                             Text = c
                         }).ToList();
 
-                         if (addToWishlist.GetValueOrDefault())
-                         {
-                        // Perform the actual operation to add the item to the wishlist
-                        AddToWishlist(expense);
+                       // if (addToWishlist.GetValueOrDefault())
+                       // {
+                            // Perform the actual operation to add the item to the wishlist
+                            AddToWishlist(expense);
 
-                        // Redirect to the Wishlist page
-                        return RedirectToAction("Index", "Wishlist");
-                        }
-
-                        return View("Add", expense);
+                            // Redirect to the Wishlist page
+                            return RedirectToAction("Index", "Wishlist");
+                        //}
+                        //else
+                        //{
+                            // If addToWishlist is false, return the original form
+                        //    return View("Add", expense);
+                        //}
                     }
                     else
                     {

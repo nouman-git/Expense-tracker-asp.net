@@ -156,6 +156,21 @@ namespace ExpenseTrack.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             expense.UserId = userId;
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+
+            if (expense.Amount > user.Balance)
+            {
+                // Expense amount exceeds user's balance
+                ViewBag.ExceedsBalance = true;
+                var categories = new List<string> { "Category1", "Category2", "Category3" };
+                ViewBag.Categories = categories.Select(c => new SelectListItem
+                {
+                    Value = c,
+                    Text = c
+                }).ToList();
+                return View("Edit", new Expense());
+            }
 
             // Update the expense in the database
             _context.Expenses.Update(expense);

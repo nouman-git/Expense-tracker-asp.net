@@ -152,14 +152,13 @@ namespace ExpenseTrack.Controllers
 
 
         [HttpPost]
-        public IActionResult EditExpense(Expense expense)
+        public IActionResult EditExpense(Expense updatedExpense)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            expense.UserId = userId;
+            updatedExpense.UserId = userId;
             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
 
-
-            if (expense.Amount > user.Balance)
+            if (updatedExpense.Amount > user.Balance)
             {
                 // Expense amount exceeds user's balance
                 ViewBag.ExceedsBalance = true;
@@ -172,12 +171,20 @@ namespace ExpenseTrack.Controllers
                 return View("Edit", new Expense());
             }
 
+            // Retrieve the original expense from the database
+            var originalExpense = _context.Expenses.AsNoTracking().FirstOrDefault(e => e.ExpenseID == updatedExpense.ExpenseID);
+
+            // Adjust the user's balance
+            user.Balance += originalExpense.Amount;
+            user.Balance -= updatedExpense.Amount;
+
             // Update the expense in the database
-            _context.Expenses.Update(expense);
+            _context.Update(updatedExpense);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
+
 
 
 
@@ -195,8 +202,6 @@ namespace ExpenseTrack.Controllers
 
             return RedirectToAction("Index");
         }
-
-
 
     }
 }

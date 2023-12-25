@@ -1,10 +1,16 @@
 ﻿@using ExpenseTrack.Models.UserProfile
+@using Microsoft.Extensions.DependencyInjection
 @using Microsoft.AspNetCore.Identity
 @using ExpenseTrack.Areas.Identity.Data
+@using ExpenseTrack.Data
 @using Microsoft.EntityFrameworkCore
 
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+
+@{
+    var context = ViewContext.HttpContext.RequestServices.GetRequiredService<ExpenseTrackContext>();
+}
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
@@ -13,7 +19,7 @@
             @{
                 var user = await UserManager.GetUserAsync(User);
                 var firstName = user?.firstName ?? "User"; // Use "User" if the first name is not available
-                var userInfo = ViewData["UserInfo"] as UserInfo;
+                var userInfo = context.UserInfo.FirstOrDefault(u => u.UserId == user.Id);
                 var userProfilePicture = "/images/default.jpg"; // Set a default profile picture URL
 
                 // Check if the user has a profile picture
@@ -25,12 +31,13 @@
 
             <div class="d-flex align-items-center">
                 <!-- Display user profile picture as a small icon -->
-                <img src="@userProfilePicture" class="rounded-circle" style="width: 32px; height: 32px; margin-right: 10px;" alt="Profile Icon" />
+                <img src="@userProfilePicture" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 8px;" alt="Profile Icon" />
 
                 <!-- Display "Hello user" message -->
-                <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @firstName!</a>
+                <a class="nav-link text-dark">Hello @firstName!</a>
             </div>
         </li>
+
         <li class="nav-item">
             <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>

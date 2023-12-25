@@ -54,7 +54,7 @@ namespace ExpenseTrack.Controllers
             return View("Add");
         }
         [HttpPost]
-        public IActionResult AddExpense(Expense expense, bool? addToWishlist)
+        public IActionResult AddExpense(Expense expense, bool addToWishlist)
         {
             try
             {
@@ -76,8 +76,10 @@ namespace ExpenseTrack.Controllers
                             Text = c
                         }).ToList();
 
-                       // if (addToWishlist.GetValueOrDefault())
-                       // {
+
+                        //if (addToWishlist)
+
+                        //{
                             // Perform the actual operation to add the item to the wishlist
                             AddToWishlist(expense);
 
@@ -87,7 +89,7 @@ namespace ExpenseTrack.Controllers
                         //else
                         //{
                             // If addToWishlist is false, return the original form
-                        //    return View("Add", expense);
+                          //  return View("Add", expense);
                         //}
                     }
                     else

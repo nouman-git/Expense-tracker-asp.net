@@ -15,8 +15,8 @@
                 <div class="alert alert-danger" role="alert">
                     Your expense item amount is exceeding your balance.
                     <form asp-controller="Expense" asp-action="AddExpense" method="post" onsubmit="return validateForm()">
-                        <input type="hidden" id="addToWishlistInput" name="addToWishlist" value="false" />
-                        <button type="submit" class="btn btn-warning" name="addToWishlist" onclick="setAddToWishlist()">Add to Wishlist</button>
+                        <input type="hidden" id="addToWishlistInput" name="addToWishlist" value="true" />
+                        <button type="submit" class="btn btn-warning" name="addToWishlist">Add to Wishlist</button>
                         <a asp-action="Index" asp-controller="Expense" class="btn btn-secondary">Discard this item</a>
                     </form>
                 </div>
@@ -86,6 +86,7 @@
         document.getElementById("addToWishlistInput").value = "true";
     }
 </script>
+
 
 
 

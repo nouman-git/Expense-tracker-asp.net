@@ -44,8 +44,12 @@ namespace ExpenseTrack.Controllers.UserProfile
                 UserProfilePicture = userInfo?.UserProfilePicture // Display profile picture URL
             };
 
+            // Set UserInfo in ViewData
+            ViewData["UserInfo"] = userInfo;
+
             return View("_UserProfilePartial", model);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> UpdateProfile()

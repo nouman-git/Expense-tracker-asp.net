@@ -47,9 +47,12 @@ namespace ExpenseTrack.Controllers
 
                 if (user != null && amount > 0)
                 {
-                    user.Balance += amount;
-                    await _userManager.UpdateAsync(user);
-                    Console.WriteLine($"User {user.UserName}'s balance increased by {amount}. New balance: {user.Balance}");
+                    if (IsValidAmountFormat(amount))
+                    {
+                        user.Balance += amount;
+                        await _userManager.UpdateAsync(user);
+                        Console.WriteLine($"User {user.UserName}'s balance increased by {amount}. New balance: {user.Balance}");
+                    }
                 }
 
                 return Ok(); // Return a success status code
@@ -66,6 +69,12 @@ namespace ExpenseTrack.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private bool IsValidAmountFormat(decimal amount)
+        {
+            // Check if the amount has a valid format (e.g., non-negative, not too large)
+            return amount >= 0 && amount < decimal.MaxValue;
         }
     }
 }

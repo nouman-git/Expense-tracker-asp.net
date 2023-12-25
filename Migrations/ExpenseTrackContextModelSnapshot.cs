@@ -369,7 +369,7 @@ namespace ExpenseTrack.Migrations
             modelBuilder.Entity("ExpenseTrack.Models.WishlistItem", b =>
                 {
                     b.HasOne("ExpenseTrack.Areas.Identity.Data.User", "User")
-                        .WithMany()
+                        .WithMany("WishlistItems")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -434,6 +434,8 @@ namespace ExpenseTrack.Migrations
 
                     b.Navigation("UserInfo")
                         .IsRequired();
+
+                    b.Navigation("WishlistItems");
                 });
 #pragma warning restore 612, 618
         }

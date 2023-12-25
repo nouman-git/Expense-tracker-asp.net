@@ -21,7 +21,6 @@ namespace ExpenseTrack.Controllers
         }
 
         // GET: Expense
-
         public IActionResult Index(DateTime? filterDate)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -54,7 +53,7 @@ namespace ExpenseTrack.Controllers
             return View("Add");
         }
         [HttpPost]
-        public IActionResult AddExpense(Expense expense, bool addToWishlist)
+        public IActionResult AddExpense(Expense expense)
         {
             try
             {
@@ -62,6 +61,8 @@ namespace ExpenseTrack.Controllers
                 expense.UserId = userId;
 
                 var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+                // bool addToWishlist = HttpContext.Request.Form["addToWishlist"] == "true";
+                //System.Diagnostics.Debug.WriteLine($"addToWishlist: {addToWishlist}");
 
                 if (user != null)
                 {
@@ -75,23 +76,9 @@ namespace ExpenseTrack.Controllers
                             Value = c,
                             Text = c
                         }).ToList();
-
-
-                        //if (addToWishlist)
-
-                        //{
-                            // Perform the actual operation to add the item to the wishlist
-                            AddToWishlist(expense);
-
-                            // Redirect to the Wishlist page
-                            return RedirectToAction("Index", "Wishlist");
-                        //}
-                        //else
-                        //{
-                            // If addToWishlist is false, return the original form
-                          //  return View("Add", expense);
-                        //}
+                        return View("Add", new Expense());
                     }
+
                     else
                     {
                         // Deduct the amount from the user's balance
@@ -101,6 +88,8 @@ namespace ExpenseTrack.Controllers
                         // Continue with the original logic
                         _context.Expenses.Add(expense);
                         _context.SaveChanges();
+
+                        return RedirectToAction("Index");
                     }
                 }
 
@@ -119,12 +108,10 @@ namespace ExpenseTrack.Controllers
                 return View("Add", expense);
             }
         }
-
-        // New method to add an expense item to the wishlist
-        private void AddToWishlist(Expense expense)
+        public IActionResult AddToWishlist(Expense expense)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var wishlistItem = new WishlistItem
             {
                 ExpenseName = expense.ExpenseName,
@@ -134,10 +121,13 @@ namespace ExpenseTrack.Controllers
                 Category = expense.Category,
                 UserId = userId
             };
-
             _context.WishlistItems.Add(wishlistItem);
             _context.SaveChanges();
+            return RedirectToAction("Index");
+
+
         }
+
 
 
 
@@ -197,72 +187,6 @@ namespace ExpenseTrack.Controllers
 }
 
 
-//[HttpPost]
-//public IActionResult AddExpense(Expense expense)
-//{
-//    try
-//    {
-//        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-//        expense.UserId = userId;
-
-//        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-
-//        if (user != null)
-//        {
-//            if (expense.Amount > user.Balance)
-//            {
-//                // Expense amount exceeds user's balance
-//                ViewBag.ExceedsBalance = true;
-//                var categories = new List<string> { "Category1", "Category2", "Category3" };
-//                ViewBag.Categories = categories.Select(c => new SelectListItem
-//                {
-//                    Value = c,
-//                    Text = c
-//                }).ToList();
-//                return View("Add", expense);
-//            }
-//            else
-//            {
-//                // Deduct the amount from the user's balance
-//                user.Balance -= expense.Amount;
-//                _context.SaveChanges();
-
-//                // Add the expense to the database
-//                _context.Expenses.Add(expense);
-//                _context.SaveChanges();
-
-//                return RedirectToAction("Index");
-//            }
-//        }
-
-//        return RedirectToAction("Index");
-//    }
-//    catch (Exception ex)
-//    {
-//        // Log the exception or handle it as appropriate for your application
-//        ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
-//        var categories = new List<string> { "Category1", "Category2", "Category3" };
-//        ViewBag.Categories = categories.Select(c => new SelectListItem
-//        {
-//            Value = c,
-//            Text = c
-//        }).ToList();
-//        return View("Add", expense);
-//    }
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
 //public IActionResult ExpensePartialView(DateTime? filterDate)
 //{
 //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -278,3 +202,5 @@ namespace ExpenseTrack.Controllers
 
 //    return PartialView("_ExpenseIndexPartial", expenses);
 //}
+
+

@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Edit Expense";
+    var exceedsBalance = ViewBag.ExceedsBalance ?? false;
+
 }
 
 <h2>Edit Expense</h2>
@@ -9,6 +11,15 @@
 <div role="dialog" aria>
     <div class="modal-dialog">
         <div class="modal-content">
+            @if (exceedsBalance)
+            {
+                <div class="alert alert-danger" role="alert">
+                    Your expense amount is exceeding your balance.
+                    Please Enter valid amount.
+                    
+                    <a asp-action="Index" asp-controller="Expense" class="btn btn-secondary">Discard Changes</a>
+                </div>
+            }
             <form asp-action="EditExpense" asp-controller="Expense" method="post" onsubmit="return validateForm()">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Expense</h5>

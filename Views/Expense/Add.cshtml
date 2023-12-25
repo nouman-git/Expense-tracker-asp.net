@@ -14,11 +14,16 @@
             {
                 <div class="alert alert-danger" role="alert">
                     Your expense item amount is exceeding your balance.
-                    <form asp-controller="Expense" asp-action="AddExpense" method="post" onsubmit="return validateForm()">
-                        <input type="hidden" id="addToWishlistInput" name="addToWishlist" value="true" />
-                        <button type="submit" class="btn btn-warning" name="addToWishlist">Add to Wishlist</button>
-                        <a asp-action="Index" asp-controller="Expense" class="btn btn-secondary">Discard this item</a>
+                    <form asp-action="AddToWishlist" asp-controller="Expense" method="post">
+                        <input id="ExpenseNameHidden" name="ExpenseName" type="hidden" />
+                        <input id="AmountHidden" name="Amount" type="hidden" />
+                        <input id="DateHidden" name="Date" type="hidden" />
+                        <input id="DescriptionHidden" name="Description" type="hidden" />
+                        <input id="CategoryHidden" name="Category" type="hidden" />
+
+                        <button type="submit" class="btn btn-warning" onclick="updateHiddenForm()">Add to Wishlist</button>
                     </form>
+                    <a asp-action="Index" asp-controller="Expense" class="btn btn-secondary">Discard this item</a>
                 </div>
             }
 
@@ -61,88 +66,13 @@
 </div>
 
 <script>
-    function validateForm() {
-        var category = document.getElementById("CategoryID").value;
-        if (category === "") {
-            document.getElementById("categoryError").innerText = "Please select a category.";
-            return false;
-        } else {
-            document.getElementById("categoryError").innerText = "";
-        }
-
-        var amount = document.getElementById("Amount").value;
-        if (parseFloat(amount) < 0) {
-            document.getElementById("categoryError").innerText = "Amount cannot be negative.";
-            return false;
-        } else {
-            document.getElementById("categoryError").innerText = "";
-        }
-
-        return true;
+    function updateHiddenForm() {
+        document.getElementById("ExpenseNameHidden").value = document.getElementById("ExpenseName").value;
+        document.getElementById("AmountHidden").value = document.getElementById("Amount").value;
+        document.getElementById("DateHidden").value = document.getElementById("Date").value;
+        document.getElementById("DescriptionHidden").value = document.getElementById("Description").value;
+        document.getElementById("CategoryHidden").value = document.getElementById("Category").value;
     }
-
-    function setAddToWishlist() {
-        // Set the hidden field to true before submitting the form
-        document.getElementById("addToWishlistInput").value = "true";
-    }
-</script>
-
-
-
-
-
-
-
-
-@* @model ExpenseTrack.Models.Expense
-
-@{
-    ViewData["Title"] = "Add Expense";
-}
-<h2>Add Expense Item</h2>
-
-<div tabindex="-1" role="dialog" aria>
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form asp-action="AddExpense" asp-controller="Expense" method="post" onsubmit="return validateForm()">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Expense</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label asp-for="ExpenseName">Name</label>
-                        <input asp-for="ExpenseName" class="form-control" required />
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Amount">Amount</label>
-                        <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0" pattern="\d+(\.\d{2})?" required />
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Date">Date</label>
-                        <input asp-for="Date" class="form-control" type="date" required />
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Description">Description</label>
-                        <input asp-for="Description" class="form-control" required />
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Category">Category</label>
-                        <select asp-for="Category" asp-items="ViewBag.Categories" class="form-control" required>
-                            <option value="">Select a Category</option>
-                        </select>
-                        <span id="categoryError" style="color: red;"></span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a asp-action="Index" asp-controller="Expense" class="btn btn-default">Cancel</a>
-                    <input type="submit" class="btn btn-success" value="Add">
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
     function validateForm() {
         var category = document.getElementById("CategoryID").value;
         if (category === "") {
@@ -163,4 +93,8 @@
         return true;
     }
 </script>
- *@
+
+
+
+
+

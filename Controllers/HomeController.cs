@@ -27,8 +27,10 @@ namespace ExpenseTrack.Controllers
             var user = await _userManager.GetUserAsync(User);
             var fullName = $"{user?.firstName} {user?.lastName}";
             var balance = $"{user?.Balance}";
+            var date  = $"{user?.CreditDate}";
             ViewData["FullName"] = fullName;
             ViewData["Balance"] = balance;
+            ViewData["Date"] = date;
             return View();
         }
 

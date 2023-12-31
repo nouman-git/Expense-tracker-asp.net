@@ -30,6 +30,18 @@
                         <label asp-for="Input.Income"></label>
                         <span asp-validation-for="Input.Income" class="text-danger"></span>
                 </div>
+                        <div class="form-floating mb-3">
+                            <select asp-for="Input.CreditDate" class="form-control" aria-required="true">
+                                @for (int i = 1; i <= 28; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+                            <label asp-for="Input.CreditDate"></label>
+                            <span asp-validation-for="Input.CreditDate" class="text-danger"></span>
+
+
+                        </div>
 
 
                         <div class="form-floating mb-3">
@@ -63,4 +75,18 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+        function validateSpinnerInput(input) {
+            // Remove leading zeros and ensure the value is within the allowed range
+            var inputValue = input.value.replace(/^0+/, ''); // Remove leading zeros
+            var intValue = parseInt(inputValue, 10);
+
+            if (isNaN(intValue) || intValue < 1 || intValue > 28) {
+            input.setCustomValidity('Please enter a valid value between 1 and 28');
+        } else {
+            // Update the input value without leading zeros
+            input.value = intValue;
+            input.setCustomValidity('');
+        }
+    }
 }

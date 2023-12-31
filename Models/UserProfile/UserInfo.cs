@@ -8,6 +8,8 @@ namespace ExpenseTrack.Models.UserProfile
         public string UserProfilePicture { get; set; }
         public decimal Income { get; set; }
 
+        public int CreditDate { get; set; }
+
         public decimal Balance { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }

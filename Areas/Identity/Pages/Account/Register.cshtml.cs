@@ -113,6 +113,11 @@ namespace ExpenseTrack.Areas.Identity.Pages.Account
             [Display(Name = "Income")]
             [Range(0.01, double.MaxValue, ErrorMessage = "Income must be a non-zero positive number.")]
             public decimal Income { get; set; }
+
+            [Required]
+            [Display(Name = "Credit Date")]
+            [Range(1, 28, ErrorMessage = "Enter a valid date range.")]
+            public int CreditDate { get; set; }
         }
 
 
@@ -136,6 +141,7 @@ namespace ExpenseTrack.Areas.Identity.Pages.Account
                 user.lastName = Input.LastName;
                 user.Income = Input.Income;
                 user.Balance = Input.Income;
+                user.CreditDate = Input.CreditDate;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

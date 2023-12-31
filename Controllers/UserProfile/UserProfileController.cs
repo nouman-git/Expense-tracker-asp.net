@@ -42,7 +42,8 @@ namespace ExpenseTrack.Controllers.UserProfile
                 Email = loggedInUser?.Email,
                 Income = loggedInUser?.Income ?? 0,
                 UserProfilePicture = userInfo?.UserProfilePicture // Display profile picture URL
-            };
+                //CreditDate = loggedInUser?.CreditDate ?? 1;
+        };
 
             // Set UserInfo in ViewData
             ViewData["UserInfo"] = userInfo;
@@ -58,13 +59,15 @@ namespace ExpenseTrack.Controllers.UserProfile
             var userInfo = _context.UserInfo.FirstOrDefault(u => u.UserId == loggedInUserId);
             var loggedInUser = await _userManager.FindByIdAsync(loggedInUserId);
 
-            var model = new UserProfileViewModel
-            {
-                FirstName = loggedInUser?.firstName,
-                LastName = loggedInUser?.lastName,
-                Email = loggedInUser?.Email,
-                Income = loggedInUser?.Income ?? 0,
-                UserProfilePicture = userInfo?.UserProfilePicture // Display profile picture URL
+        var model = new UserProfileViewModel
+        {
+            FirstName = loggedInUser?.firstName,
+            LastName = loggedInUser?.lastName,
+            Email = loggedInUser?.Email,
+            Income = loggedInUser?.Income ?? 0,
+            UserProfilePicture = userInfo?.UserProfilePicture
+            //CreditDate = loggedInUser?.CreditDate;
+        // Display profile picture URL
             };
 
             return PartialView("_UserProfilePartial", model);
@@ -143,6 +146,7 @@ namespace ExpenseTrack.Controllers.UserProfile
                 loggedInUser.firstName = model.FirstName;
                 loggedInUser.lastName = model.LastName;
                 loggedInUser.Income = model.Income;
+                loggedInUser.CreditDate = model.CreditDate;
                 await _userManager.UpdateAsync(loggedInUser);
             }
 
@@ -163,7 +167,12 @@ namespace ExpenseTrack.Controllers.UserProfile
                     userInfo.Income = model.Income;
                 }
 
-                if (model.PictureFile != null)
+        if (model.CreditDate != 0)
+        {
+            userInfo.CreditDate = model.CreditDate;
+        }
+
+        if (model.PictureFile != null)
                 {
                     userInfo.UserProfilePicture = @"\images\profile\" + fileName;
                 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -40,6 +41,33 @@ namespace ExpenseTrack.Controllers
                 .GroupBy(e => e.Category)
                 .Select(g => new { Category = g.Key, Count = g.Count() })
                 .ToList();
+            var costOfExpensesByCategory = _context.Expenses
+                .Where(e => e.UserId == userId)
+                .GroupBy(e => e.Category)
+                .Select(g => new { Category = g.Key, Amount = g.Sum(e => e.Amount) })
+                .ToList();
+
+            TimeZoneInfo pakistanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
+            DateTime currentDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pakistanTimeZone).Date;
+            DateTime startDateOfCurrentWeek = currentDate.AddDays(-(int)currentDate.DayOfWeek);
+
+            // Number of weeks to include, including the current week
+            int numberOfWeeks = 5;
+
+            var expensesLastFourWeeks = _context.Expenses
+                .Where(e => e.UserId == userId && e.Date >= startDateOfCurrentWeek.AddDays(-numberOfWeeks * 7))
+                .ToList();
+
+            var expensesByWeek = expensesLastFourWeeks
+                .GroupBy(e => (int)Math.Floor((e.Date - startDateOfCurrentWeek).TotalDays / 7) + 1)
+                .Select(g => new { Week = g.Key, Amount = g.Sum(e => e.Amount) })
+                .ToList();
+
+
+
+            ViewBag.expensesByWeek = expensesByWeek;
+            ViewBag.expensesByWeek = expensesByWeek;
+            ViewBag.costOfExpensesByCategory = costOfExpensesByCategory;
             ViewBag.numberOfExpensesByCategory = numberOfExpensesByCategory;
             return View();
         }

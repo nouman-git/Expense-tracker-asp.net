@@ -19,11 +19,26 @@
             <div id="expensePartialContainer"></div>
         </div>
 
-        <div class="charts-container">
-            <div class="chart-container">
-                <h2>numberOfExpensesByCategory</h2>
-                <canvas id="numberOfExpensesByCategory" width="10" height="10"></canvas>
+        <div class="charts-container" style=" display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+            margin-bottom: 20px;">
+            <div class="chart-container" style="width:400px; height:300px; margin: 50px">
+                <h5>Number of Expenses by Category</h5>
+                <canvas id="numberOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
             </div>
+            <div class="chart-container" style="width:400px; height:300px; margin: 50px">
+                <h5>Cost Of Expenses By Category</h5>
+                <canvas id="costOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
+            </div>
+            <div class="chart-container" style="width:400px; height:300px; margin: 50px">
+                <h5>Last Four Week expense</h5>
+                <canvas id="expensesByWeek" style="width:100%; height:100%;"></canvas>
+            </div>
+
+
+
         </div>
     }
     else
@@ -71,24 +86,18 @@
                     $("#Balance").html($(data).find("#Balance").html());
                 });
             }
-
-
-            var departmentData = @Html.Raw(Json.Serialize(ViewBag.numberOfExpensesByCategory)) || [];
-            var departmentLabels = departmentData.map(item => item.category);
-            var departmentCounts = departmentData.map(item => item.count);
-            console.log(departmentData);
-            console.log("Labels:", departmentLabels);
-            console.log("Counts:", departmentCounts);
-
-            // Render Department Distribution Pie Chart
-            var departmentCtx = document.getElementById('numberOfExpensesByCategory').getContext('2d');
-            var departmentChart = new Chart(departmentCtx, {
+            var numberOfExpensesByCategory = @Html.Raw(Json.Serialize(ViewBag.numberOfExpensesByCategory)) || [];
+            var categoryLabels = numberOfExpensesByCategory.map(item => item.category);
+            var CategoryCount = numberOfExpensesByCategory.map(item => item.count);
+        
+            var categoryCtx = document.getElementById('numberOfExpensesByCategory').getContext('2d');
+            var catChart = new Chart(categoryCtx, {
                 type: 'bar',
                 data: {
-                    labels: departmentLabels,
+                    labels: categoryLabels,
                     datasets: [{
-                        label: 'Department Distribution',
-                        data: departmentCounts,
+                        label: 'Number Of Expenses By Category',
+                        data: CategoryCount,
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.5)',
                             'rgba(54, 162, 235, 0.5)',
@@ -112,6 +121,101 @@
                     responsive: true
                 }
             });
+
+            var costOfExpensesByCategory = @Html.Raw(Json.Serialize(ViewBag.costOfExpensesByCategory)) || [];
+            //var categoryLabels = costOfExpensesByCategory.map(item => item.category);
+            var categoryAmounts = costOfExpensesByCategory.map(item => item.amount);
+            var costCtx = document.getElementById('costOfExpensesByCategory').getContext('2d');
+            var costChart = new Chart(costCtx, {
+                type: 'bar',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        label: 'Cost Of Expenses By Category',
+                        data: categoryAmounts,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            var expensesByWeek = @Html.Raw(Json.Serialize(ViewBag.expensesByWeek)) || [];
+
+            expensesByWeek.sort((a, b) => a.week - b.week);
+
+            var weekLabels = expensesByWeek.map(item => {
+                var currentDate = new Date();
+                var firstDayOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + (item.week - 1) * 7));
+                var lastDayOfWeek = new Date(firstDayOfWeek);
+                lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+
+                var startMonth = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(firstDayOfWeek);
+                var endMonth = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(lastDayOfWeek);
+
+                return `${startMonth} ${firstDayOfWeek.getDate()} - ${endMonth} ${lastDayOfWeek.getDate()}`;
+            });
+            console.log(weekLabels);
+
+            var weekAmounts = expensesByWeek.map(item => item.amount);
+
+            var weekCtx = document.getElementById('expensesByWeek').getContext('2d');
+            var weekChart = new Chart(weekCtx, {
+                type: 'bar',
+                data: {
+                    labels: weekLabels,
+                    datasets: [{
+                        label: 'Expenses By Week',
+                        data: weekAmounts,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+
+
+
+
+
+
+            // Rest of your chart rendering code...
+            
         });
     </script>
 }

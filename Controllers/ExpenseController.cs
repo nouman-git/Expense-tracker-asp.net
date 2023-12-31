@@ -43,7 +43,7 @@ namespace ExpenseTrack.Controllers
 
         public IActionResult AddPage()
         {
-            var categories = new List<string> { "Category1", "Category2", "Category3" }; // Add your hardcoded categories
+            var categories = new List<string> { "Housing", "Transportation", "Entertainment", "Personal Care" , "Debt Payments" , "Other" }; // Add your hardcoded categories
             ViewBag.Categories = categories.Select(c => new SelectListItem
             {
                 Value = c,
@@ -70,7 +70,7 @@ namespace ExpenseTrack.Controllers
                     {
                         // Expense amount exceeds user's balance
                         ViewBag.ExceedsBalance = true;
-                        var categories = new List<string> { "Category1", "Category2", "Category3" };
+                        var categories = new List<string> { "Housing", "Transportation", "Entertainment", "Personal Care", "Debt Payments", "Other" }; // Add your hardcoded categories
                         ViewBag.Categories = categories.Select(c => new SelectListItem
                         {
                             Value = c,
@@ -99,7 +99,7 @@ namespace ExpenseTrack.Controllers
             {
                 // Log the exception or handle it as appropriate for your application
                 ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
-                var categories = new List<string> { "Category1", "Category2", "Category3" };
+                var categories = new List<string> { "Housing", "Transportation", "Entertainment", "Personal Care", "Debt Payments", "Other" }; // Add your hardcoded categories
                 ViewBag.Categories = categories.Select(c => new SelectListItem
                 {
                     Value = c,
@@ -140,7 +140,7 @@ namespace ExpenseTrack.Controllers
                 return NotFound();
             }
 
-            var categories = new List<string> { "Category1", "Category2", "Category3" }; // Add your hardcoded categories
+            var categories = new List<string> { "Housing", "Transportation", "Entertainment", "Personal Care", "Debt Payments", "Other" }; // Add your hardcoded categories
             ViewBag.Categories = categories.Select(c => new SelectListItem
             {
                 Value = c,
@@ -162,7 +162,7 @@ namespace ExpenseTrack.Controllers
             {
                 // Expense amount exceeds user's balance
                 ViewBag.ExceedsBalance = true;
-                var categories = new List<string> { "Category1", "Category2", "Category3" };
+                var categories = new List<string> { "Housing", "Transportation", "Entertainment", "Personal Care", "Debt Payments", "Other" }; // Add your hardcoded categories
                 ViewBag.Categories = categories.Select(c => new SelectListItem
                 {
                     Value = c,
@@ -202,8 +202,24 @@ namespace ExpenseTrack.Controllers
 
             return RedirectToAction("Index");
         }
+        public IActionResult ExpensesByCategory()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var numberOfExpensesByCategory = _context.Expenses
+                .Where(e => e.UserId == userId)
+                .GroupBy(e => e.Category)
+                .Select(g => new { Category = g.Key, Count = g.Count() })
+                .ToDictionary(x => x.Category, x => x.Count);
+
+            ViewBag.numberOfExpensesByCategory = numberOfExpensesByCategory;
+
+            return View("Home/Index");
+        }
 
     }
+   
+
 }
 
 

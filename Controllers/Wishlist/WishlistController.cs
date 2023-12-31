@@ -48,7 +48,7 @@ public class WishlistController : Controller
     public IActionResult AddPage()
 
     {
-        var categories = new List<string> { "Category1", "Category2", "Category3" }; // Add your hardcoded categories
+        var categories = new List<string> { "Housing", "Transportation", "Entertainment", "Personal Care", "Debt Payments", "Other" }; // Add your hardcoded categories
         ViewBag.Categories = categories.Select(c => new SelectListItem
         {
             Value = c,
@@ -74,7 +74,7 @@ public class WishlistController : Controller
         catch (Exception ex)
         {
             ModelState.AddModelError(string.Empty, "An error occurred while processing your request.");
-            var categories = new List<string> { "Category1", "Category2", "Category3" };
+            var categories = new List<string> { "Housing", "Transportation", "Entertainment", "Personal Care", "Debt Payments", "Other" }; // Add your hardcoded categories
             ViewBag.Categories = categories.Select(c => new SelectListItem
             {
                 Value = c,

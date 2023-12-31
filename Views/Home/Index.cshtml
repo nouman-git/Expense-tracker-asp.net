@@ -18,6 +18,13 @@
 
             <div id="expensePartialContainer"></div>
         </div>
+
+        <div class="charts-container">
+            <div class="chart-container">
+                <h2>numberOfExpensesByCategory</h2>
+                <canvas id="numberOfExpensesByCategory" width="10" height="10"></canvas>
+            </div>
+        </div>
     }
     else
     {
@@ -27,6 +34,7 @@
 
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         $(document).ready(function () {
             $("#increaseBalanceButton").click(function () {
@@ -54,6 +62,7 @@
                     // Provide user feedback for invalid input on the page
                     $("#invalidAmountMessage").text("Please enter a valid positive amount.").show();
                 }
+
             });
 
             function updateBalance() {
@@ -62,6 +71,47 @@
                     $("#Balance").html($(data).find("#Balance").html());
                 });
             }
+
+
+            var departmentData = @Html.Raw(Json.Serialize(ViewBag.numberOfExpensesByCategory)) || [];
+            var departmentLabels = departmentData.map(item => item.category);
+            var departmentCounts = departmentData.map(item => item.count);
+            console.log(departmentData);
+            console.log("Labels:", departmentLabels);
+            console.log("Counts:", departmentCounts);
+
+            // Render Department Distribution Pie Chart
+            var departmentCtx = document.getElementById('numberOfExpensesByCategory').getContext('2d');
+            var departmentChart = new Chart(departmentCtx, {
+                type: 'bar',
+                data: {
+                    labels: departmentLabels,
+                    datasets: [{
+                        label: 'Department Distribution',
+                        data: departmentCounts,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
         });
     </script>
 }

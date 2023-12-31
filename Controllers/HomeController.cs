@@ -1,11 +1,14 @@
 ﻿using ExpenseTrack.Areas.Identity.Data;
+using ExpenseTrack.Data;
 using ExpenseTrack.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ExpenseTrack.Controllers
@@ -14,13 +17,15 @@ namespace ExpenseTrack.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<User> _userManager;
+        private readonly ExpenseTrackContext _context;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<User> userManager)
+
+        public HomeController(ILogger<HomeController> logger, UserManager<User> userManager , ExpenseTrackContext context)
         {
             _logger = logger;
             _userManager = userManager;
+            _context = context;
         }
-
 
         public async Task<IActionResult> IndexAsync()
         {
@@ -29,6 +34,13 @@ namespace ExpenseTrack.Controllers
             var balance = $"{user?.Balance}";
             ViewData["FullName"] = fullName;
             ViewData["Balance"] = balance;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var numberOfExpensesByCategory = _context.Expenses
+                .Where(e => e.UserId == userId)
+                .GroupBy(e => e.Category)
+                .Select(g => new { Category = g.Key, Count = g.Count() })
+                .ToList();
+            ViewBag.numberOfExpensesByCategory = numberOfExpensesByCategory;
             return View();
         }
 

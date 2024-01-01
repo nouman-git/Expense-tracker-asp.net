@@ -4,10 +4,10 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="container">
+<div class="container mt-lg-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="d-flex justify-content-center align-items-center p-3 w-100 border border-dark rounded" style="height: 80vh;">
+            <div class="d-flex justify-content-center align-items-center p-3 w-100" style="height: 80vh;">
                 <div class="container" style="padding: 20px;">
                     <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                         <h2 class="text-center">Register Yourself</h2>
@@ -52,9 +52,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-flex justify-content-center align-items-center">
+       @*  <div class="col-md-6 d-flex justify-content-center align-items-center">
             <img src="~/images/login.jpeg" alt="Login Image" class="img-fluid" style="height: 50vh; max-width: 100%;" />
-        </div>
+        </div> *@
 
     </div>
 </div>

@@ -112,19 +112,19 @@
         
             var categoryCtx = document.getElementById('numberOfExpensesByCategory').getContext('2d');
             var catChart = new Chart(categoryCtx, {
-                type: 'bar',
+                type: 'doughnut',
                 data: {
                     labels: categoryLabels,
                     datasets: [{
                         label: 'Number Of Expenses By Category',
                         data: CategoryCount,
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)',
-                            'rgba(54, 162, 235, 0.5)',
-                            'rgba(255, 206, 86, 0.5)',
-                            'rgba(75, 192, 192, 0.5)',
-                            'rgba(153, 102, 255, 0.5)',
-                            'rgba(255, 159, 64, 0.5)'
+                            'rgba(255, 99, 132)',
+                            'rgba(54, 162, 235)',
+                            'rgba(255, 206, 86)',
+                            'rgba(75, 192, 192)',
+                            'rgba(153, 102, 255)',
+                            'rgba(255, 159, 64)'
                         ],
                         borderColor: [
                             'rgba(255, 99, 132, 1)',
@@ -154,12 +154,12 @@
                         label: 'Cost Of Expenses By Category',
                         data: categoryAmounts,
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)',
-                            'rgba(54, 162, 235, 0.5)',
-                            'rgba(255, 206, 86, 0.5)',
-                            'rgba(75, 192, 192, 0.5)',
-                            'rgba(153, 102, 255, 0.5)',
-                            'rgba(255, 159, 64, 0.5)'
+                            'rgba(255, 99, 132)',
+                            'rgba(54, 162, 235)',
+                            'rgba(255, 206, 86)',
+                            'rgba(75, 192, 192)',
+                            'rgba(153, 102, 255)',
+                            'rgba(255, 159, 64)'
                         ],
                         borderColor: [
                             'rgba(255, 99, 132, 1)',
@@ -192,25 +192,24 @@
 
                 return `${startMonth} ${firstDayOfWeek.getDate()} - ${endMonth} ${lastDayOfWeek.getDate()}`;
             });
-            console.log(weekLabels);
 
             var weekAmounts = expensesByWeek.map(item => item.amount);
 
             var weekCtx = document.getElementById('expensesByWeek').getContext('2d');
             var weekChart = new Chart(weekCtx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: weekLabels,
                     datasets: [{
                         label: 'Expenses By Week',
                         data: weekAmounts,
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)',
-                            'rgba(54, 162, 235, 0.5)',
-                            'rgba(255, 206, 86, 0.5)',
-                            'rgba(75, 192, 192, 0.5)',
-                            'rgba(153, 102, 255, 0.5)',
-                            'rgba(255, 159, 64, 0.5)'
+                            'rgba(255, 99, 132 )',
+                            'rgba(54, 162, 235 )',
+                            'rgba(255, 206, 86)',
+                            'rgba(75, 192, 192)',
+                            'rgba(153, 102, 255)',
+                            'rgba(255, 159, 64)'
                         ],
                         borderColor: [
                             'rgba(255, 99, 132, 1)',
@@ -227,13 +226,6 @@
                     responsive: true
                 }
             });
-
-
-
-
-
-
-
             // Rest of your chart rendering code...
             
         });

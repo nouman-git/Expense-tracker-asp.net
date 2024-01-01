@@ -1,6 +1,9 @@
 ﻿@using ExpenseTrack.Models.UserProfile
 @{
     var userInfo = ViewData["UserInfo"] as UserInfo;
+   
+    string path = Context.Request.Path;
+
 }
 
 <!DOCTYPE html>
@@ -24,12 +27,35 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <style>
+        /* Custom styles */
+        .active {
+            position: relative; /* Set the positioning context for the pseudo-element */
+            color: #025D78 !important; /* Override Bootstrap text color */
+            border-radius: 5px; /* Optional: Add border-radius for rounded corners */
+        }
+
+            .active::after {
+                content: ''; /* Create an empty content */
+                position: absolute; /* Position the dot relative to its containing element */
+                bottom: 0; /* Position the dot at the bottom of the link */
+                left: 50%; /* Center the dot horizontally */
+                transform: translateX(-50%); /* Adjust the horizontal centering */
+                width: 90%; /* Set the width of the dot */
+                height: 2px; /* Set the height of the dot */
+                background-color: #025D78; /* Set the color of the dot */
+                 /* Create a circular shape */
+            }
+
+
+    </style>
+
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ExpenseTrack</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Expense Tracker</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -38,18 +64,16 @@
                 {
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center">
                         <!-- Center the content -->
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <ul class="nav">
+
+                            <li class="nav-item  ">
+                                <a class="nav-link text-dark  @(path.StartsWith("/Expense") ? "active" : "")" asp-area="" asp-controller="Expense" asp-action="Index">Expense</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="Index">Expense</a>
+                            <li class="nav-item  ">
+                                <a class="nav-link text-dark  @(path.StartsWith("/Wishlist") ? "active" : "")" asp-area="" asp-controller="Wishlist" asp-action="Index">Wish List</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Wishlist" asp-action="Index">Wish List</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="UserProfile" asp-action="Index">Profile</a>
+                            <li class="nav-item ">
+                                <a class="nav-link text-dark  @(path.StartsWith("/UserProfile") ? "active" : "")" asp-area="" asp-controller="UserProfile" asp-action="Index">Profile</a>
                             </li>
                         </ul>
                     </div>
@@ -58,6 +82,7 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

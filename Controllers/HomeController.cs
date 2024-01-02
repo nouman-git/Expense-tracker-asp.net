@@ -31,16 +31,17 @@ namespace ExpenseTrack.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            var fullName = $"{user?.firstName} {user?.lastName}";
-            var balance = $"{user?.Balance}";
-            ViewData["FullName"] = fullName;
-            ViewData["Balance"] = balance;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            ViewData["FullName"] = $"{user?.firstName} {user?.lastName}";
+            ViewData["Balance"] = $"{user?.Balance}";
+
             var numberOfExpensesByCategory = _context.Expenses
                 .Where(e => e.UserId == userId)
                 .GroupBy(e => e.Category)
                 .Select(g => new { Category = g.Key, Count = g.Count() })
                 .ToList();
+
             var costOfExpensesByCategory = _context.Expenses
                 .Where(e => e.UserId == userId)
                 .GroupBy(e => e.Category)
@@ -49,26 +50,40 @@ namespace ExpenseTrack.Controllers
 
             TimeZoneInfo pakistanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
             DateTime currentDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pakistanTimeZone).Date;
+            DateTime startDateOfCurrentMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+            int numberOfWeeks = 4;
             DateTime startDateOfCurrentWeek = currentDate.AddDays(-(int)currentDate.DayOfWeek);
+            DateTime startDateOfLastThreeWeeks = startDateOfCurrentWeek.AddDays(-numberOfWeeks * 7);
 
-            // Number of weeks to include, including the current week
-            int numberOfWeeks = 5;
-
-            var expensesLastFourWeeks = _context.Expenses
-                .Where(e => e.UserId == userId && e.Date >= startDateOfCurrentWeek.AddDays(-numberOfWeeks * 7))
+            var expensesForCurrentAndLastThreeWeeks = _context.Expenses
+                .Where(e => e.UserId == userId &&
+                            e.Date >= startDateOfLastThreeWeeks &&
+                            e.Date <= currentDate)
                 .ToList();
 
-            var expensesByWeek = expensesLastFourWeeks
-                .GroupBy(e => (int)Math.Floor((e.Date - startDateOfCurrentWeek).TotalDays / 7) + 1)
+            var expensesByWeek = expensesForCurrentAndLastThreeWeeks
+                .GroupBy(e => (int)Math.Floor((e.Date - startDateOfLastThreeWeeks).TotalDays / 7) + 1)
                 .Select(g => new { Week = g.Key, Amount = g.Sum(e => e.Amount) })
                 .ToList();
 
+            // Generate week labels
+            var weekLabels = expensesByWeek
+                .OrderBy(item => startDateOfLastThreeWeeks.AddDays((item.Week - 1) * 7))
+                .Select(item =>
+                {
+                    var startOfWeek = startDateOfLastThreeWeeks.AddDays((item.Week - 1) * 7);
+                    var endOfWeek = startOfWeek.AddDays(6);
+                    var startMonth = startOfWeek.ToString("MMM", CultureInfo.InvariantCulture);
+                    var endMonth = endOfWeek.ToString("MMM", CultureInfo.InvariantCulture);
+                    return $"{startMonth} {startOfWeek.Day} - {endMonth} {endOfWeek.Day}";
+                })
+                .ToList();
 
+            ViewBag.ExpensesByWeek = expensesByWeek;
+            ViewBag.WeekLabels = weekLabels;  // Include week labels in ViewBag
+            ViewBag.CostOfExpensesByCategory = costOfExpensesByCategory;
+            ViewBag.NumberOfExpensesByCategory = numberOfExpensesByCategory;
 
-            ViewBag.expensesByWeek = expensesByWeek;
-            ViewBag.expensesByWeek = expensesByWeek;
-            ViewBag.costOfExpensesByCategory = costOfExpensesByCategory;
-            ViewBag.numberOfExpensesByCategory = numberOfExpensesByCategory;
             return View();
         }
 

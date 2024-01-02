@@ -54,7 +54,7 @@
                 <canvas id="costOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
             </div>
             <div class="chart-container" style="width:400px; height:300px; margin: 50px">
-                <h5>Last Four Week expense</h5>
+                <h5>Recent Week Summary</h5>
                 <canvas id="expensesByWeek" style="width:100%; height:100%;"></canvas>
             </div>
 
@@ -178,20 +178,16 @@
             });
 
             var expensesByWeek = @Html.Raw(Json.Serialize(ViewBag.expensesByWeek)) || [];
+            var weekLabels = @Html.Raw(Json.Serialize(ViewBag.weekLabels)) || [];
+
+
+            console.log(expensesByWeek);
+            console.log(weekLabels);
+
 
             expensesByWeek.sort((a, b) => a.week - b.week);
 
-            var weekLabels = expensesByWeek.map(item => {
-                var currentDate = new Date();
-                var firstDayOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + (item.week - 1) * 7));
-                var lastDayOfWeek = new Date(firstDayOfWeek);
-                lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
-
-                var startMonth = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(firstDayOfWeek);
-                var endMonth = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(lastDayOfWeek);
-
-                return `${startMonth} ${firstDayOfWeek.getDate()} - ${endMonth} ${lastDayOfWeek.getDate()}`;
-            });
+         
 
             var weekAmounts = expensesByWeek.map(item => item.amount);
 

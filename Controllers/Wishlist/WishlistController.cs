@@ -17,32 +17,35 @@ public class WishlistController : Controller
         _context = context;
     }
 
-    public IActionResult Index(DateTime? filterDate)
+    public IActionResult Index(DateTime? filterDate, int page = 1, int pageSize = 5)
     {
-        try
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var wishlistItemsQuery = _context.WishlistItems
+            .Where(w => w.UserId == userId);
+
+        if (filterDate.HasValue)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var wishlistItems = _context.WishlistItems
-                .Where(w => w.UserId == userId)
-                .ToList();
-
-            ViewBag.UserBalance = GetUserBalance(userId);
-
-            if (filterDate.HasValue)
-            {
-                wishlistItems = wishlistItems
-                    .Where(w => w.Date.Date == filterDate.Value.Date)
-                    .ToList();
-            }
-
-            return View("WishlistIndex", wishlistItems);
+            wishlistItemsQuery = wishlistItemsQuery
+                .Where(w => w.Date.Date == filterDate.Value.Date);
         }
-        catch (Exception ex)
+
+        var totalWishlistItems = wishlistItemsQuery.Count();
+        var wishlistItems = wishlistItemsQuery
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        var paginationModel = new PaginationModel<WishlistItem>
         {
-            // Log the exception or handle it as appropriate for your application
-            return BadRequest("An error occurred while processing your request.");
-        }
+            Items = wishlistItems,
+            TotalItems = totalWishlistItems,
+            CurrentPage = page,
+            PageSize = pageSize
+        };
+
+        return View("WishlistIndex", paginationModel);
     }
+
 
 
     public IActionResult AddPage()

@@ -21,22 +21,44 @@ namespace ExpenseTrack.Controllers
         }
 
         // GET: Expense
-        public IActionResult Index(DateTime? filterDate)
+        public IActionResult Index(DateTime? filterDate, int page = 1, int pageSize = 5)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var expenses = _context.Expenses
-            .Where(e => e.UserId == userId)
-            .ToList();
-
-            if (filterDate.HasValue)
+            try
             {
-                expenses = expenses
-                    .Where(e => e.Date.Date == filterDate.Value.Date)
-                    .ToList();
-            }
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var expensesQuery = _context.Expenses
+                    .Where(e => e.UserId == userId);
 
-            return View("Index", expenses);
+                if (filterDate.HasValue)
+                {
+                    expensesQuery = expensesQuery
+                        .Where(e => e.Date.Date == filterDate.Value.Date);
+                }
+
+                var totalExpenses = expensesQuery.Count();
+                var expenses = expensesQuery
+                    .OrderByDescending(e => e.Date) 
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                var paginationModel = new PaginationModel<Expense>
+                {
+                    Items = expenses,
+                    TotalItems = totalExpenses,
+                    CurrentPage = page,
+                    PageSize = pageSize
+                };
+
+                return View("Index", paginationModel); 
+            }
+            catch (Exception ex)
+            {
+                // Handle exception...
+                return BadRequest("An error occurred while processing your request.");
+            }
         }
+
 
 
 

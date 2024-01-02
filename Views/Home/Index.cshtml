@@ -8,15 +8,58 @@
         <h5>Welcome @ViewData["FullName"] </h5>
         <div>
             <h5 id="Balance">@ViewData["Balance"]</h5>
-            <button id="increaseBalanceButton" class="btn btn-primary">Increase Balance</button>
+            <button id="increaseBalanceButton" class="btn btn-primary" data-toggle="modal" data-target="#increaseBalanceModal">
+                Increase Balance
+            </button>
 
-            <div id="increaseBalanceContainer" style="display: none;">
-                <input type="number" id="amountInput" placeholder="Enter amount" />
-                <button id="submitIncreaseBalance" class="btn btn-success">Submit</button>
-                <div id="invalidAmountMessage" style="color: red; display: none;"></div>
+            <div class="modal fade" id="increaseBalanceModal" tabindex="-1" role="dialog" aria-labelledby="increaseBalanceModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="increaseBalanceModalLabel">Increase Balance</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div id="increaseBalanceContainer">
+                                <label for="amountInput" style="text-align: left;">Enter Amount:</label>
+                                <input type="number" class="form-control" id="amountInput" placeholder="Enter amount" required />
+                                <div id="invalidAmountMessage" style="color: red; text-align: left; display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancelButton" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button id="submitIncreaseBalance" class="btn btn-primary" >Submit</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="expensePartialContainer"></div>
+        </div>
+
+        <div class="charts-container" style=" display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+            margin-bottom: 20px;">
+            <div class="chart-container" style="width:400px; height:300px; margin: 50px">
+                <h5>Number of Expenses by Category</h5>
+                <canvas id="numberOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
+            </div>
+            <div class="chart-container" style="width:400px; height:300px; margin: 50px">
+                <h5>Cost Of Expenses By Category</h5>
+                <canvas id="costOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
+            </div>
+            <div class="chart-container" style="width:400px; height:300px; margin: 50px">
+                <h5>Recent Week Summary</h5>
+                <canvas id="expensesByWeek" style="width:100%; height:100%;"></canvas>
+            </div>
+
+
+
         </div>
     }
     else
@@ -26,32 +69,32 @@
 </div>
 
 @section scripts {
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         console.log("ViewData Title: ", "@ViewData["Date"]");
 
 
         $(document).ready(function () {
             $("#increaseBalanceButton").click(function () {
-                console.log("Increase Balance button clicked");
                 $("#increaseBalanceContainer").show();
             });
 
             $("#submitIncreaseBalance").click(function () {
-                console.log("Submit Increase Balance button clicked");
                 var amount = parseFloat($("#amountInput").val());
 
                 if (!isNaN(amount) && amount > 0) {
-                    console.log("Valid amount: " + amount);
-
                     $.post('@Url.Action("IncreaseBalance")', { amount: amount }, function () {
-                        console.log("Increase Balance success");
                         // Update the balance dynamically
                         updateBalance();
                         // Clear the input field
                         $("#amountInput").val('');
                         // Hide the invalid amount message if shown
                         $("#invalidAmountMessage").hide();
+                        // Close the modal
+                        $("#cancelButton").click();
+
                     });
                 } else {
                     // Provide user feedback for invalid input on the page
@@ -63,8 +106,127 @@
                 // Retrieve the updated balance from the server and update the UI
                 $.get('@Url.Action("Index", "Home")', function (data) {
                     $("#Balance").html($(data).find("#Balance").html());
+                  
                 });
             }
+            var numberOfExpensesByCategory = @Html.Raw(Json.Serialize(ViewBag.numberOfExpensesByCategory)) || [];
+            var categoryLabels = numberOfExpensesByCategory.map(item => item.category);
+            var CategoryCount = numberOfExpensesByCategory.map(item => item.count);
+        
+            var categoryCtx = document.getElementById('numberOfExpensesByCategory').getContext('2d');
+            var catChart = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        label: 'Number Of Expenses By Category',
+                        data: CategoryCount,
+                        backgroundColor: [
+                            'rgba(255, 99, 132)',
+                            'rgba(54, 162, 235)',
+                            'rgba(255, 206, 86)',
+                            'rgba(75, 192, 192)',
+                            'rgba(153, 102, 255)',
+                            'rgba(255, 159, 64)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            var costOfExpensesByCategory = @Html.Raw(Json.Serialize(ViewBag.costOfExpensesByCategory)) || [];
+            //var categoryLabels = costOfExpensesByCategory.map(item => item.category);
+            var categoryAmounts = costOfExpensesByCategory.map(item => item.amount);
+            var costCtx = document.getElementById('costOfExpensesByCategory').getContext('2d');
+            var costChart = new Chart(costCtx, {
+                type: 'bar',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        label: 'Cost Of Expenses By Category',
+                        data: categoryAmounts,
+                        backgroundColor: [
+                            'rgba(255, 99, 132)',
+                            'rgba(54, 162, 235)',
+                            'rgba(255, 206, 86)',
+                            'rgba(75, 192, 192)',
+                            'rgba(153, 102, 255)',
+                            'rgba(255, 159, 64)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            var expensesByWeek = @Html.Raw(Json.Serialize(ViewBag.expensesByWeek)) || [];
+            var weekLabels = @Html.Raw(Json.Serialize(ViewBag.weekLabels)) || [];
+
+
+            console.log(expensesByWeek);
+            console.log(weekLabels);
+
+
+            expensesByWeek.sort((a, b) => a.week - b.week);
+
+         
+
+            var weekAmounts = expensesByWeek.map(item => item.amount);
+
+            var weekCtx = document.getElementById('expensesByWeek').getContext('2d');
+            var weekChart = new Chart(weekCtx, {
+                type: 'line',
+                data: {
+                    labels: weekLabels,
+                    datasets: [{
+                        label: 'Expenses By Week',
+                        data: weekAmounts,
+                        backgroundColor: [
+                            'rgba(255, 99, 132 )',
+                            'rgba(54, 162, 235 )',
+                            'rgba(255, 206, 86)',
+                            'rgba(75, 192, 192)',
+                            'rgba(153, 102, 255)',
+                            'rgba(255, 159, 64)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+            // Rest of your chart rendering code...
+            
         });
     </script>
 }

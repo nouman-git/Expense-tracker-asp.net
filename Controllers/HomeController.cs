@@ -31,10 +31,14 @@ namespace ExpenseTrack.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            ViewData["FullName"] = $"{user?.firstName} {user?.lastName}";
-            ViewData["Balance"] = $"{user?.Balance}";
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var fullName = $"{user?.firstName} {user?.lastName}";
+            var balance = $"{user?.Balance}";
+            var date  = $"{user?.CreditDate}";
+            ViewData["FullName"] = fullName;
+            ViewData["Balance"] = balance;
+            ViewData["Date"] = date;
 
             var numberOfExpensesByCategory = _context.Expenses
                 .Where(e => e.UserId == userId)
@@ -84,6 +88,7 @@ namespace ExpenseTrack.Controllers
             ViewBag.CostOfExpensesByCategory = costOfExpensesByCategory;
             ViewBag.NumberOfExpensesByCategory = numberOfExpensesByCategory;
 
+            
             return View();
         }
 

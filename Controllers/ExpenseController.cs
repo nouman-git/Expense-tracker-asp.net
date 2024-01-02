@@ -178,6 +178,8 @@ namespace ExpenseTrack.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             updatedExpense.UserId = userId;
             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var originalExpense = _context.Expenses.AsNoTracking().FirstOrDefault(e => e.ExpenseID == updatedExpense.ExpenseID);
+            user.Balance += originalExpense.Amount;
 
             if (updatedExpense.Amount > user.Balance)
             {
@@ -193,10 +195,9 @@ namespace ExpenseTrack.Controllers
             }
 
             // Retrieve the original expense from the database
-            var originalExpense = _context.Expenses.AsNoTracking().FirstOrDefault(e => e.ExpenseID == updatedExpense.ExpenseID);
 
             // Adjust the user's balance
-            user.Balance += originalExpense.Amount;
+
             user.Balance -= updatedExpense.Amount;
 
             // Update the expense in the database

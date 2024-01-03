@@ -1,17 +1,63 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
+<div class="">
     @if (User.Identity.IsAuthenticated)
     {
-        <h5>Welcome @ViewData["FullName"] </h5>
+        @* <h5>Welcome @ViewData["FullName"] </h5> *@
+        <div >
+            <div class="mt-5">
+                <div class="d-flex justify-content-md-evenly ">
+
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Balance</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Your current balance is </h6>
+                            <p id="Balance" class="card-text">@ViewData["Balance"]</p>
+
+                            <button id="increaseBalanceButton" class="btn btn-primary card-link" data-toggle="modal" data-target="#increaseBalanceModal">
+                                Increase Balance
+                            </button>
+                        </div>
+                    </div>
+
+                    @* <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Balance</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Your current balance is </h6>
+                            <p id="Balance" class="card-text">@ViewData["Balance"]</p>
+
+                            <button id="increaseBalanceButton" class="btn btn-primary card-link" data-toggle="modal" data-target="#increaseBalanceModal">
+                                Increase Balance
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Balance</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Your current balance is </h6>
+                            <p id="Balance" class="card-text">@ViewData["Balance"]</p>
+
+                            <button id="increaseBalanceButton" class="btn btn-primary card-link" data-toggle="modal" data-target="#increaseBalanceModal">
+                                Increase Balance
+                            </button>
+                        </div>
+                    </div> *@
+
+                </div>
+            </div>
+
+        </div>
+      
+
         <div>
-            <h5 id="Balance">@ViewData["Balance"]</h5>
+          @*   <h5 id="Balance">@ViewData["Balance"]</h5>
             <button id="increaseBalanceButton" class="btn btn-primary" data-toggle="modal" data-target="#increaseBalanceModal">
                 Increase Balance
             </button>
-
+ *@
             <div class="modal fade" id="increaseBalanceModal" tabindex="-1" role="dialog" aria-labelledby="increaseBalanceModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -39,16 +85,20 @@
 
             <div id="expensePartialContainer"></div>
         </div>
+        <div class="text-start d-flex justify-content-center">
+            <div class="chart-container" style="width:500px; height:400px; margin: 50px;">
+                <h5>Number of Expenses by Category</h5>
+                <canvas id="numberOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
+            </div>
 
+        </div>
+       
+           
         <div class="charts-container" style=" display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
             margin-top: 20px;
             margin-bottom: 20px;">
-            <div class="chart-container" style="width:400px; height:300px; margin: 50px">
-                <h5>Number of Expenses by Category</h5>
-                <canvas id="numberOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
-            </div>
             <div class="chart-container" style="width:400px; height:300px; margin: 50px">
                 <h5>Cost Of Expenses By Category</h5>
                 <canvas id="costOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
@@ -77,6 +127,12 @@
 
 
         $(document).ready(function () {
+            $("#loadExpensePartial").click(function () {
+                console.log("Load Expense button clicked");
+               
+            });
+
+
             $("#increaseBalanceButton").click(function () {
                 $("#increaseBalanceContainer").show();
             });
@@ -94,6 +150,7 @@
                         $("#invalidAmountMessage").hide();
                         // Close the modal
                         $("#cancelButton").click();
+                        
 
                     });
                 } else {
@@ -103,6 +160,7 @@
             });
 
             function updateBalance() {
+                console.log('update call');
                 // Retrieve the updated balance from the server and update the UI
                 $.get('@Url.Action("Index", "Home")', function (data) {
                     $("#Balance").html($(data).find("#Balance").html());

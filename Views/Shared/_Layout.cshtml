@@ -11,7 +11,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ExpenseTrack</title>
+    <title>@ViewData["Title"] - ExpenseTracker</title>
     <script src="~/lib/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -31,7 +31,7 @@
         /* Custom styles */
         .active {
             position: relative; /* Set the positioning context for the pseudo-element */
-            color: #025D78 !important; /* Override Bootstrap text color */
+            color: #013E50 !important; /* Override Bootstrap text color */
             border-radius: 5px; /* Optional: Add border-radius for rounded corners */
         }
 
@@ -43,7 +43,7 @@
                 transform: translateX(-50%); /* Adjust the horizontal centering */
                 width: 90%; /* Set the width of the dot */
                 height: 2px; /* Set the height of the dot */
-                background-color: #025D78; /* Set the color of the dot */
+                background-color: #013E50; /* Set the color of the dot */
                  /* Create a circular shape */
             }
 
@@ -53,38 +53,44 @@
 </head>
 <body>
     <header>
+
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Expense Tracker</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="color: #013E50">
+                     <img src="/images/logo.png" alt="Logo" style="width: 40px; height: 38px;" class="d-inline-block mx-1 " /> 
+
+               
+
+                    Expense Tracker
+                </a>
+
                 @if (User.Identity.IsAuthenticated)
                 {
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center">
                         <!-- Center the content -->
-                        <ul class="nav">
-
-                            <li class="nav-item  ">
-                                <a class="nav-link text-dark  @(path.StartsWith("/Expense") ? "active" : "")" asp-area="" asp-controller="Expense" asp-action="Index">Expense</a>
+                        <ul class="nav" >
+                            <li class="nav-item"  >
+                                <a style=" color: #013E50" class="nav-link  @(path.StartsWith("/Expense") ? "active" : "")" asp-area="" asp-controller="Expense" asp-action="Index">Expense</a>
                             </li>
                             <li class="nav-item  ">
-                                <a class="nav-link text-dark  @(path.StartsWith("/Wishlist") ? "active" : "")" asp-area="" asp-controller="Wishlist" asp-action="Index">Wish List</a>
+                                <a style=" color: #013E50" class="nav-link   @(path.StartsWith("/Wishlist") ? "active" : "")" asp-area="" asp-controller="Wishlist" asp-action="Index">Wish List</a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link text-dark  @(path.StartsWith("/UserProfile") ? "active" : "")" asp-area="" asp-controller="UserProfile" asp-action="Index">Profile</a>
+                                <a style=" color: #013E50"  class="nav-link   @(path.StartsWith("/UserProfile") ? "active" : "")" asp-area="" asp-controller="UserProfile" asp-action="Index">Profile</a>
                             </li>
                         </ul>
                     </div>
                 }
                 <partial name="_LoginPartial" />
             </div>
+
         </nav>
     </header>
 
     <div class="container">
         <main role="main" class="pb-3">
+
             @RenderBody()
         </main>
     </div>

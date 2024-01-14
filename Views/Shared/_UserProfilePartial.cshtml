@@ -56,10 +56,15 @@
                     <select asp-for="CreditDate" class="form-control" required>
                         @for (int i = 1; i <= 28; i++)
                         {
-                            var dayNumber = i;
-                            var date = Model.CreditDate;
-                            System.Diagnostics.Debug.WriteLine(date.ToString());
-                            <option value="@i" selected="12">@i</option>
+                            @if(Model.CreditDate == i){
+                                <option value="@i" selected>@i</option>               
+                                }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
+
+
                         }
                     </select> 
                     </div>
@@ -81,5 +86,6 @@
     console.log("Model.LastName: ", "@Model.LastName");
     console.log("Model.Income: ", "@Model.Income");
     console.log("Model.CreditDate: ", "@Model.CreditDate");
+    console.log("Model.Status: ", status);
 </script>
 

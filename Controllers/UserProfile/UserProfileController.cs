@@ -41,8 +41,8 @@ namespace ExpenseTrack.Controllers.UserProfile
                 LastName = loggedInUser?.lastName,
                 Email = loggedInUser?.Email,
                 Income = loggedInUser?.Income ?? 0,
-                UserProfilePicture = userInfo?.UserProfilePicture // Display profile picture URL
-                //CreditDate = loggedInUser?.CreditDate ?? 1;
+                UserProfilePicture = userInfo?.UserProfilePicture, // Display profile picture URL
+                CreditDate = loggedInUser?.CreditDate ?? 1
         };
 
             // Set UserInfo in ViewData

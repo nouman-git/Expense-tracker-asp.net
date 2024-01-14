@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTrack.Data;
 using ExpenseTrack.Areas.Identity.Data;
-
+using Hangfire;
+using Hangfire.SqlServer;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -16,7 +17,15 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddHangfire(configuration => configuration.UseSqlServerStorage("Server=.\\localhost; Database=HangfireTest; Integrated Security=True;"));
+
 var app = builder.Build();
+
+
+app.UseHangfireServer();
+
+// Configure Hangfire dashboard (optional)
+app.UseHangfireDashboard();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -33,6 +42,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+
 
 // Middleware to redirect to login page if not authenticated
 app.Use(async (context, next) =>

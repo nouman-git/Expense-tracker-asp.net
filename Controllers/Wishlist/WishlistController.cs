@@ -28,6 +28,9 @@ public class WishlistController : Controller
             wishlistItemsQuery = wishlistItemsQuery
                 .Where(w => w.Date.Date == filterDate.Value.Date);
         }
+        var userBalance = GetUserBalance(userId);
+        ViewBag.UserBalance = userBalance;
+
 
         var totalWishlistItems = wishlistItemsQuery.Count();
         var wishlistItems = wishlistItemsQuery

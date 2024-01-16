@@ -12,7 +12,7 @@
         <div class="modal-content">
             @if (exceedsBalance)
             {
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-danger p-2 " role="alert">
                     Your expense item amount is exceeding your balance.
                     <form asp-action="AddToWishlist" asp-controller="Expense" method="post">
                         <input id="ExpenseNameHidden" name="ExpenseName" type="hidden" />
@@ -21,9 +21,10 @@
                         <input id="DescriptionHidden" name="Description" type="hidden" />
                         <input id="CategoryHidden" name="Category" type="hidden" />
 
-                        <button type="submit" class="btn btn-warning" onclick="updateHiddenForm()">Add to Wishlist</button>
+                        <button type="submit" class="btn text-white m-2" style="background-color:#013E50" onclick="updateHiddenForm()">Add to Wishlist</button>
+                        <a asp-action="Index" asp-controller="Expense" class="btn btn-secondary">Discard this item</a>
+
                     </form>
-                    <a asp-action="Index" asp-controller="Expense" class="btn btn-secondary">Discard this item</a>
                 </div>
             }
 
@@ -57,8 +58,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a asp-action="Index" asp-controller="Expense" class="btn btn-default">Cancel</a>
-                    <input type="submit" class="btn btn-success" value="Add">
+                    <a asp-action="Index" asp-controller="Expense" class="btn "
+                       style="background-color: #E6BCCD;">Cancel</a>
+                    <input type="submit" class="btn  text-white"
+                           style="background-color: #013E50;"  value="Add">
                 </div>
             </form>
         </div>

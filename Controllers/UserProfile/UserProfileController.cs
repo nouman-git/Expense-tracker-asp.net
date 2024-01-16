@@ -192,9 +192,23 @@ namespace ExpenseTrack.Controllers.UserProfile
 
         private bool IsImageFile(IFormFile file)
         {
-            // To check if the file content type to determine if it's a jpg, png, or jpeg image
+            // Check if the file content type is a jpg, png, or jpeg image
             var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
-            return allowedContentTypes.Contains(file.ContentType);
+            if (!allowedContentTypes.Contains(file.ContentType))
+            {
+                ModelState.AddModelError("PictureFile", "Please upload a valid jpg, png, or jpeg image file.");
+                return false;
+            }
+
+            // Check if the file size is within the allowed limit (2MB)
+            var maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
+            if (file.Length > maxSizeInBytes)
+            {
+                ModelState.AddModelError("PictureFile", "Image file size must be no more than 2MB.");
+                return false;
+            }
+
+            return true;
         }
     }
 }

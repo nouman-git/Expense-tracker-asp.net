@@ -13,7 +13,10 @@
             <form asp-controller="UserProfile" asp-action="UpdateProfile" class="mt-4" method="post" enctype="multipart/form-data">
 
                 <div class="text-center mb-3">
-                    <img src="@(!string.IsNullOrEmpty(Model.UserProfilePicture) ? Model.UserProfilePicture : "/images/default.jpg")" class="rounded-circle" style="width: 150px; height:150px; margin-bottom: 10px;" alt="Avatar" />
+                    <a asp-area="" asp-controller="UserProfile" asp-action="Index">
+                        <img src="@(!string.IsNullOrEmpty(Model.UserProfilePicture) ? Model.UserProfilePicture : "/images/default.jpg")" class="rounded-circle" style="width: 150px; height:150px; margin-bottom: 10px;" alt="Avatar" />
+                    </a>
+                    
 
                     <div>
                         <!-- Add Remove Picture button -->

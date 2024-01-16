@@ -73,7 +73,7 @@
 
 
 
-@section Scripts {
+@* @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
         function validateSpinnerInput(input) {
@@ -84,9 +84,8 @@
             if (isNaN(intValue) || intValue < 1 || intValue > 28) {
             input.setCustomValidity('Please enter a valid value between 1 and 28');
         } else {
-            // Update the input value without leading zeros
             input.value = intValue;
             input.setCustomValidity('');
         }
     }
-}
+} *@

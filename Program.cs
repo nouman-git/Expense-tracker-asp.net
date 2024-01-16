@@ -2,11 +2,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTrack.Data;
 using ExpenseTrack.Areas.Identity.Data;
+
+using Hangfire;
+using Hangfire.SqlServer;
+
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ExpenseTrackContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(connectionString);
+});
+
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ExpenseTrackContext>();
@@ -14,6 +25,10 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<IHostedService, DailyBalanceUpdateBackgroundService>();
+builder.Services.AddSingleton<DailyBalanceUpdateService>();
+
+
 
 
 var app = builder.Build();
@@ -29,6 +44,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseHangfireServer();
+app.UseHangfireDashboard();
+
 
 app.UseRouting();
 
@@ -55,6 +74,11 @@ app.Use(async (context, next) =>
     await next();
 });
 
+// In your application startup or configuration code
+RecurringJob.AddOrUpdate<DailyBalanceUpdateService>("UpdateUserBalances", x => x.UpdateUserBalances(), Cron.Hourly(7)); // Runs every day at 7:00 AM
+RecurringJob.AddOrUpdate<DailyBalanceUpdateService>("UpdateUserBalances",  x => x.UpdateUserBalances(), "0 12 * * *");
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -70,3 +94,5 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+

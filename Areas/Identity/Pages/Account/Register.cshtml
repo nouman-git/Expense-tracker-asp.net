@@ -70,20 +70,3 @@
 
 
 
-@section Scripts {
-   @*  <partial name="_ValidationScriptsPartial" />
-
-        function validateSpinnerInput(input) {
-            // Remove leading zeros and ensure the value is within the allowed range
-            var inputValue = input.value.replace(/^0+/, ''); // Remove leading zeros
-            var intValue = parseInt(inputValue, 10);
-
-            if (isNaN(intValue) || intValue < 1 || intValue > 28) {
-            input.setCustomValidity('Please enter a valid value between 1 and 28');
-        } else { 
-            // Update the input value without leading zeros
-            input.value = intValue;
-            input.setCustomValidity('');
-        }
-    } *@
-}

@@ -34,23 +34,23 @@
                 <img src="@userProfilePicture" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 8px;" alt="Profile Icon" />
 
                 <!-- Display "Hello user" message -->
-                <a style=" color: #013E50" class="nav-link ">@firstName</a>
+                <a style="color: white" class="nav-link ">@firstName</a>
             </div>
         </li>
 
         <li class="nav-item">
             <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button style=" color: #013E50" id="logout" type="submit" class="nav-link btn btn-link ">Logout</button>
+                <button style="color: white" id="logout" type="submit" class="nav-link btn btn-link ">Logout</button>
             </form>
         </li>
     }
     else
     {
         <li class="nav-item">
-            <a style=" color: #013E50" class="nav-link " id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            <a style="color: white" class="nav-link " id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
         </li>
         <li class="nav-item">
-            <a style=" color: #013E50" class="nav-link " id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a style="color: white" class="nav-link " id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
         </li>
     }
 </ul>

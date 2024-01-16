@@ -5,7 +5,7 @@
     ViewData["Title"] = "User Profile";
 }
 
-<div class="container mt-4">
+<div class="container-xl mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h2 class="text-center">User Profile</h2>
@@ -19,7 +19,7 @@
                         <!-- Add Remove Picture button -->
                         @if (!string.IsNullOrEmpty(Model.UserProfilePicture) && Model.UserProfilePicture != "/images/default.jpg")
                         {
-                            <button type="submit" name="RemovePicture" value="true" class="btn btn-danger mb-2">Remove Picture</button>
+                            <button type="submit" name="RemovePicture" value="true" class="btn mb-2" style=" background-color:#7E5E86; color:white;"> Remove Picture</button>
                         }
                     </div>
 
@@ -70,7 +70,7 @@
                     </div>
 
                 <div class="text-center mt-3">
-                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                    <button type="submit" class="btn" style=" background-color:#013E50; color:white;">  Update Profile</button>
                 </div>
 
             </form>

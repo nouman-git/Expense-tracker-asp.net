@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ExpenseTrack.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Tangerine">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -31,7 +33,7 @@
         /* Custom styles */
         .active {
             position: relative; /* Set the positioning context for the pseudo-element */
-            color: #013E50 !important; /* Override Bootstrap text color */
+            color: white !important; /* Override Bootstrap text color */
             border-radius: 5px; /* Optional: Add border-radius for rounded corners */
         }
 
@@ -43,7 +45,7 @@
                 transform: translateX(-50%); /* Adjust the horizontal centering */
                 width: 90%; /* Set the width of the dot */
                 height: 2px; /* Set the height of the dot */
-                background-color: #013E50; /* Set the color of the dot */
+                background-color: white; /* Set the color of the dot */
                  /* Create a circular shape */
             }
 
@@ -51,14 +53,17 @@
     </style>
 
 </head>
-<body>
+<body style="font-family: 'Poppins', sans-serif; background: rgba(0, 0, 0, 0.2); background-image: url('/images/bgr1.jpeg');">
     <header>
 
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom mb-3">
+        
+
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light  border-bottom mb-3" style="background-color:#012A36">
             <div class="container-fluid">
 
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="color: #013E50">
-                     <img src="/images/logo.png" alt="Logo" style="width: 40px; height: 38px;" class="d-inline-block mx-1 " /> 
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="color: white">
+                     <img src="/images/logo1.png" alt="Logo" style="width: 40px; height: 38px;" class="d-inline-block mx-1 " /> 
 
                
 
@@ -71,13 +76,13 @@
                         <!-- Center the content -->
                         <ul class="nav" >
                             <li class="nav-item"  >
-                                <a style=" color: #013E50" class="nav-link  @(path.StartsWith("/Expense") ? "active" : "")" asp-area="" asp-controller="Expense" asp-action="Index">Expense</a>
+                                <a style=" color: white" class="nav-link  @(path.StartsWith("/Expense") ? "active" : "")" asp-area="" asp-controller="Expense" asp-action="Index">Expense</a>
                             </li>
                             <li class="nav-item  ">
-                                <a style=" color: #013E50" class="nav-link   @(path.StartsWith("/Wishlist") ? "active" : "")" asp-area="" asp-controller="Wishlist" asp-action="Index">Wish List</a>
+                                <a style=" color: white" class="nav-link   @(path.StartsWith("/Wishlist") ? "active" : "")" asp-area="" asp-controller="Wishlist" asp-action="Index">Wish List</a>
                             </li>
                             <li class="nav-item ">
-                                <a style=" color: #013E50"  class="nav-link   @(path.StartsWith("/UserProfile") ? "active" : "")" asp-area="" asp-controller="UserProfile" asp-action="Index">Profile</a>
+                                <a style=" color: white" class="nav-link   @(path.StartsWith("/UserProfile") ? "active" : "")" asp-area="" asp-controller="UserProfile" asp-action="Index">Profile</a>
                             </li>
                         </ul>
                     </div>
@@ -89,7 +94,7 @@
     </header>
 
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3 ">
 
             @RenderBody()
         </main>

@@ -14,24 +14,24 @@
                         <hr />
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.FirstName" class="form-control" aria-required="true" />
+                        <div class="form-floating mb-3" style="color: #013E50;">
+                            <input asp-for="Input.FirstName" class="form-control" aria-required="true" style="color: #013E50;" />
                             <label asp-for="Input.FirstName"></label>
-                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                            <span asp-validation-for="Input.FirstName" class="text-danger"> </span>
                         </div>
 
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.LastName" class="form-control" aria-required="true" />
+                        <div class="form-floating mb-3" style="color: #013E50;">
+                            <input asp-for="Input.LastName" class="form-control" aria-required="true" style="color: #013E50;" />
                             <label asp-for="Input.LastName"></label>
                             <span asp-validation-for="Input.LastName" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-3" style="color: #013E50;">
                         <input asp-for="Input.Income" class="form-control" aria-required="true" />
                         <label asp-for="Input.Income"></label>
                         <span asp-validation-for="Input.Income" class="text-danger"></span>
                 </div>
-                        <div class="form-floating mb-3">
-                            <select asp-for="Input.CreditDate" class="form-control" aria-required="true">
+                        <div class="form-floating mb-3" style="color: #013E50;">
+                            <select asp-for="Input.CreditDate" class="form-control" aria-required="true" style="color: #013E50;">
                                 @for (int i = 1; i <= 28; i++)
                                 {
                                     <option value="@i">@i</option>
@@ -39,27 +39,24 @@
                             </select>
                             <label asp-for="Input.CreditDate"></label>
                             <span asp-validation-for="Input.CreditDate" class="text-danger"></span>
-
-
                         </div>
 
-
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                        <div class="form-floating mb-3" style="color: #013E50;">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" style="color: #013E50;" />
                             <label asp-for="Input.Email"></label>
                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                        <div class="form-floating mb-3" style="color: #013E50;">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" style="color: #013E50;" />
                             <label asp-for="Input.Password"></label>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                        <div class="form-floating mb-3" style="color: #013E50;">
+                            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" style="color: #013E50;" />
                             <label asp-for="Input.ConfirmPassword"></label>
                             <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                         </div>
-                        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+                        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg text-white" style="background-color: #013E50;">Register</button>
                     </form>
                 </div>
             </div>
@@ -73,19 +70,3 @@
 
 
 
-@* @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-
-        function validateSpinnerInput(input) {
-            // Remove leading zeros and ensure the value is within the allowed range
-            var inputValue = input.value.replace(/^0+/, ''); // Remove leading zeros
-            var intValue = parseInt(inputValue, 10);
-
-            if (isNaN(intValue) || intValue < 1 || intValue > 28) {
-            input.setCustomValidity('Please enter a valid value between 1 and 28');
-        } else {
-            input.value = intValue;
-            input.setCustomValidity('');
-        }
-    }
-} *@

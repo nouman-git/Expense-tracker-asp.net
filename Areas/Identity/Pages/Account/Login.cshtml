@@ -14,22 +14,23 @@
                         <h2 style=" color: #013E50" class="text-center">Log in</h2>
                         <hr />
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Email" class="form-control" id="inputEmail" placeholder="Email" required autofocus />
+                        <div class="form-floating mb-3" style="color: #013E50;">
+                            <input asp-for="Input.Email" class="form-control" id="inputEmail" placeholder="Email" required autofocus style="color: #013E50;" autocomplete="off" />
                             <label asp-for="Input.Email" class="form-label">Email</label>
                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-3">
-                            <input asp-for="Input.Password" type="password" class="form-control" id="inputPassword" placeholder="Password" required /> <!-- Added 'type="password"' for the password input field -->
+
+                        <div class="form-floating mb-3" style="color: #013E50;">
+                            <input asp-for="Input.Password" type="password" class="form-control" id="inputPassword" placeholder="Password" required style="color: #013E50;" /> <!-- Added 'type="password"' for the password input field -->
                             <label asp-for="Input.Password" class="form-label">Password</label>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
-                        <div class="form-check mb-3">
+                        <div class="form-check mb-3" style="color: #013E50;">
                             <!-- Changed 'checkbox' to 'form-check' for better styling -->
                             <input asp-for="Input.RememberMe" class="form-check-input" id="rememberMe" />
                             <label class="form-check-label" for="rememberMe">Remember me</label>
                         </div>
-                         <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                        <button id="login-submit" type="submit" class="w-100 btn btn-lg text-white" style="background-color: #013E50;">Log in</button>
 
                            @* <p class="mt-3">
                                <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>

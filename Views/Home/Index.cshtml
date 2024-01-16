@@ -10,13 +10,16 @@
             <div class="mt-5">
                 <div class="d-flex justify-content-md-evenly ">
 
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
+                    <div class="card" style="width: 18rem; border-radius: 15px;">
+                        <div class="card-body" style="  border-radius: 15px;">
                             <h5 class="card-title">Balance</h5>
                             <h6 class="card-subtitle mb-2 text-muted">Your current balance is </h6>
                             <p id="Balance" class="card-text">@ViewData["Balance"]</p>
 
-                            <button id="increaseBalanceButton" class="btn btn-primary card-link" data-toggle="modal" data-target="#increaseBalanceModal">
+                            <button id="increaseBalanceButton" class="btn text-white card-link" data-toggle="modal" data-target="#increaseBalanceModal"
+                                    style="background-color: #013E50;">
+                              
+                                 
                                 Increase Balance
                             </button>
                         </div>
@@ -77,7 +80,7 @@
                         </div>
                         <div class="modal-footer">
                             <button id="cancelButton" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button id="submitIncreaseBalance" class="btn btn-primary" >Submit</button>
+                            <button id="submitIncreaseBalance" class="btn" style="background-color: #013E50; color:white;">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -85,13 +88,7 @@
 
             <div id="expensePartialContainer"></div>
         </div>
-        <div class="text-start d-flex justify-content-center">
-            <div class="chart-container" style="width:500px; height:400px; margin: 50px;">
-                <h5>Number of Expenses by Category</h5>
-                <canvas id="numberOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
-            </div>
-
-        </div>
+       
        
            
         <div class="charts-container" style=" display: flex;
@@ -99,12 +96,16 @@
             justify-content: space-around;
             margin-top: 20px;
             margin-bottom: 20px;">
+            <div class="chart-container" style="width:500px; height:400px; margin: 50px;">
+                <h5 class="text-center" style="color:#012A36">Number of Expenses by Category</h5>
+                <canvas id="numberOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
+            </div>
             <div class="chart-container" style="width:400px; height:300px; margin: 50px">
-                <h5>Cost Of Expenses By Category</h5>
+                <h5 class="text-center" style="color:#012A36">Cost Of Expenses By Category</h5>
                 <canvas id="costOfExpensesByCategory" style="width:100%; height:100%;"></canvas>
             </div>
             <div class="chart-container" style="width:400px; height:300px; margin: 50px">
-                <h5>Recent Week Summary</h5>
+                <h5 class="text-center" style="color:#012A36">Recent Week Summary</h5>
                 <canvas id="expensesByWeek" style="width:100%; height:100%;"></canvas>
             </div>
 
@@ -180,21 +181,14 @@
                         label: 'Number Of Expenses By Category',
                         data: CategoryCount,
                         backgroundColor: [
-                            'rgba(255, 99, 132)',
-                            'rgba(54, 162, 235)',
-                            'rgba(255, 206, 86)',
-                            'rgba(75, 192, 192)',
-                            'rgba(153, 102, 255)',
-                            'rgba(255, 159, 64)'
+                            'rgb(1, 42, 54)',
+                            'rgb(126, 82, 160)',
+                            'rgb(210, 149, 191)',
+                            'rgb(97, 93, 172)',
+                            'rgb(153, 102, 255)',
+                            'rgb(255, 159, 6)'
                         ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
+                       
                         borderWidth: 1
                     }]
                 },
@@ -215,21 +209,14 @@
                         label: 'Cost Of Expenses By Category',
                         data: categoryAmounts,
                         backgroundColor: [
-                            'rgba(255, 99, 132)',
-                            'rgba(54, 162, 235)',
-                            'rgba(255, 206, 86)',
-                            'rgba(75, 192, 192)',
-                            'rgba(153, 102, 255)',
-                            'rgba(255, 159, 64)'
+                            'rgb(1, 42, 54)',
+                            'rgb(126, 82, 160)',
+                            'rgb(210, 149, 191)',
+                            'rgb(97, 93, 172)',
+                            'rgb(153, 102, 255)',
+                            'rgb(255, 159, 6)'
                         ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
+                        
                         borderWidth: 1
                     }]
                 },
@@ -261,21 +248,14 @@
                         label: 'Expenses By Week',
                         data: weekAmounts,
                         backgroundColor: [
-                            'rgba(255, 99, 132 )',
-                            'rgba(54, 162, 235 )',
-                            'rgba(255, 206, 86)',
-                            'rgba(75, 192, 192)',
-                            'rgba(153, 102, 255)',
-                            'rgba(255, 159, 64)'
+                            'rgb(1, 42, 54)',
+                            'rgb(126, 82, 160)',
+                            'rgb(210, 149, 191)',
+                            'rgb(97, 93, 172)',
+                            'rgb(153, 102, 255)',
+                            'rgb(255, 159, 6)'
                         ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
+                       
                         borderWidth: 1
                     }]
                 },

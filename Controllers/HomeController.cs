@@ -52,8 +52,7 @@ namespace ExpenseTrack.Controllers
                 .Select(g => new { Category = g.Key, Amount = g.Sum(e => e.Amount) })
                 .ToList();
 
-            TimeZoneInfo pakistanTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
-            DateTime currentDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pakistanTimeZone).Date;
+            DateTime currentDate = DateTime.Now.Date;
             DateTime startDateOfCurrentMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
             int numberOfWeeks = 4;
             DateTime startDateOfCurrentWeek = currentDate.AddDays(-(int)currentDate.DayOfWeek);
